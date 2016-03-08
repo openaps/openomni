@@ -1,7 +1,8 @@
 # omnidocs
-Docs related to better understanding omni device communication
+Docs related to better understanding omni device communication.
+
 =======
-##### ** Please note this is a project created to better understand how the omnipod communicates **
+##### ** Please note the below is notes about a project created to better understand how the omnipod communicates **
 
 #### RF HARDWARE used to RECEIVE transmissions from PDM or Pod
 @dan, @larsonlr, @seattlebrighton using rfcat, as described here:  
@@ -39,19 +40,21 @@ Filter: ?
 We may add more content to the wiki here [Wiki](https://github.com/OmniAPS/Docs/wiki)
 
 #### Stay Up to Date!
-Follow us on the slack group here: https://omniaps.slack.com/messages/general/
+[Join the Slack channel](https://omniapsslack.azurewebsites.net/) to discuss this work.
 
-#### Contributors: (in no particular order)
+#### Contributors on Slack: (in no particular order)
+(To view, you must be logged into the OmniAPS Slack channel. [Click here](https://omniapsslack.azurewebsites.net/) to join.)
 * [@dan](https://omniaps.slack.com/team/dan)
 * [@larsonlr](https://omniaps.slack.com/team/larsonlr)
 * [@t1djoe](https://omniaps.slack.com/team/t1djoe)
 * [@joakimornstedt](https://omniaps.slack.com/team/joakimornstedt)
 * [@pete](https://omniaps.slack.com/team/pete)
 * [@marius](https://omniaps.slack.com/team/marius) 
-* [DanaMLewis](https://omniaps.slack.com/team/danamlewis)
-* [Garidan](https://omniaps.slack.com/team/garidan)
-* [SeattleBrighton](https://omniaps.slack.com/team/seattlebrighton)
-* [NightScout](https://github.com/nightscout)
+* [@DanaMLewis](https://omniaps.slack.com/team/danamlewis)
+* [@Garidan](https://omniaps.slack.com/team/garidan)
+* [@SeattleBrighton](https://omniaps.slack.com/team/seattlebrighton)
+* [Find out more about the NightScout community here.](https://github.com/nightscout)
+* [Find out more about the OpenAPS open source DIY artificial pancreas project here.](https://openaps.org)
 * Thanks for supporting this effort!!
 
 ***
