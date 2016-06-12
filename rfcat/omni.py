@@ -1,3 +1,9 @@
+# Omnipod Quick Setup for rfcat
+#
+# sudo rfcat -r 
+# %run omni.py
+# quick_setup(d, 40650, 1)
+
 from rflib import *
 import sys
 import binascii
