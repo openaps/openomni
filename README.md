@@ -14,9 +14,15 @@ Docs related to better understanding omni device communication.
 ##### ** Please note the below is notes about a project created to better understand how the omnipod communicates **
 
 #### RF HARDWARE used to RECEIVE transmissions from PDM or Pod
-@dan, @larsonlr, @seattlebrighton using rfcat, as described here:  
-NooElec rtl-sdr usb dongle from Amazon also receives: http://saw.amazon.com/gp/product/B00P2UOU72
-  SDR# on Windows tuned to 433.92MHz
+
+For SDR capture, you can use one of the following devices, or any SDR capable of capturing 2048000 samples per second at the 433.90MHz rf range. You'll need software to demodulate this data (see below):
+  * [rtl-sdr usb dongle](http://saw.amazon.com/gp/product/B00P2UOU72) 
+  * [HackRF One](https://greatscottgadgets.com/hackrf/)
+
+For Hardware based demodulation, you can use a cc111x based device like one of these:
+  * [RFCat](http://int3.cc/products/rfcat)
+  * [TI USB Stick](http://www.ti.com/tool/cc1111emk868-915)
+  * [RileyLink](https://github.com/ps2/rileylink)
 
 #### SOFTWARE used with the above hardware to capture wireless signals 
 @dan, @larsonlr using RFCAT with these settings (PLEASE UPDATE):
