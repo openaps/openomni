@@ -37,7 +37,7 @@ Filter: ?
 
 #### Example signal from PDM to request a Status response from Pod (containing Basal routine, IOB, etc)
 
-We may add more content to the wiki here [Wiki](https://github.com/OmniAPS/Docs/wiki)
+We may add more content to the wiki here [Wiki](https://github.com/openaps/omnidocs/wiki)
 
 #### Stay Up to Date!
 [Join the Slack channel](https://omniapsslack.azurewebsites.net/) to discuss this work.
