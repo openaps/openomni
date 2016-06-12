@@ -19,36 +19,19 @@ For SDR capture, you can use one of the following devices, or any SDR capable of
   * [rtl-sdr usb dongle](http://saw.amazon.com/gp/product/B00P2UOU72) 
   * [HackRF One](https://greatscottgadgets.com/hackrf/)
 
-For Hardware based demodulation, you can use a cc111x based device like one of these:
+For hardware based demodulation, you can use a cc111x based device like one of these:
   * [RFCat](http://int3.cc/products/rfcat)
   * [TI USB Stick](http://www.ti.com/tool/cc1111emk868-915)
   * [RileyLink](https://github.com/ps2/rileylink)
 
-#### SOFTWARE used with the above hardware to capture wireless signals 
-@dan, @larsonlr using RFCAT with these settings (PLEASE UPDATE):
-d.setFreq(433.91919e6)
-d.setMdmDRate(43210)
-d.setMdmChanBW(140000) 
-d.setMdmDeviatn(10000)
-d.setMdmModulation(MOD_GFSK)
-d.setMdmSyncMode(SYNCM_CARRIER_16_of_16) 
-d.setMdmSyncWord(0xCCCA)
-d.setEnableMdmManchester(False)
-d.setEnablePktCRC(False)
-d.setEnablePktDataWhitening(False)
-d.makePktlen(255)
-d.setPktPQT(1)
+#### SOFTWARE for capturing/decoding SDR signals
+  * [SDR#](http://www.rtl-sdr.com/tag/sdrsharp) - to capture sdr iq data
+  * [omnipod_decode](https://github.com/ps2/omnipod_decode) python decoding utilities. This code will extract packets of correct length from raw sdr iq data, and will verify CRCs.
+  * [baudline](http://www.baudline.com/) will show signal characteristics
 
-d.RFlisten
+#### SOFTWARE for doing hardware based demodulation:
 
-@seattlebrighton: SDR# (SdrSharp) on Windows: http://www.rtl-sdr.com/tag/sdrsharp.
-  
-#### SOFTWARE SETUP
-Frequency to capture PDM and Pod wireless signals: 433.92 MHz
-Baud rate (data rate): 43210 
-Encryption: 2-FSK
-Encoding: though the specs say Manchester (signals encoded by a change in state, instead of low or high), better decodes are coming from NO Manchester
-Filter: ?
+  * [rfcat](https://bitbucket.org/atlas0fd00m/rfcat) (NEED LINK to @dan's updated rfcat code here)
 
 #### Example signal from PDM to request a Status response from Pod (containing Basal routine, IOB, etc)
 
