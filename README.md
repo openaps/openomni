@@ -31,7 +31,10 @@ For hardware based demodulation, you can use a cc111x based device like one of t
 
 #### SOFTWARE for doing hardware based demodulation:
 
-  * [rfcat](https://bitbucket.org/atlas0fd00m/rfcat) (NEED LINK to @dan's updated rfcat code here)
+  * [rfcat](https://bitbucket.org/atlas0fd00m/rfcat)
+  * [omni.py](https://github.com/openaps/omnidocs/blob/master/rfcat/omni.py) - tool to configure rfcat to decode omnipod signals
+  * [SmartRF Studio](http://www.ti.com/tool/smartrftm-studio) and an [omnipod configuration](https://github.com/ps2/omnipod_decode/blob/master/cc1110_24mhz.xml) for it.
+  
 
 #### Example signal from PDM to request a Status response from Pod (containing Basal routine, IOB, etc)
 
