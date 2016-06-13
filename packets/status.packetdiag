@@ -1,0 +1,7 @@
+packetdiag {
+colwidth=32
+0-31: address1
+32-34: packet_type
+35-39: sequence
+40-71: address2
+}
