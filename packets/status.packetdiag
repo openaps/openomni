@@ -1,9 +1,9 @@
 packetdiag {
 colwidth=32
-0-31: address1
+0-31: pod_address_1
 32-34: packet_type
 35-39: sequence
-40-71: address2
+40-71: pod_address_2
 72-79: ??
 80-87: message_type?
 }
