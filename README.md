@@ -4,8 +4,8 @@ Docs related to better understanding omni device communication.
 
 #### Current understanding of signal:
 
-* 433.91MHz center signal
-* 2-[FSK](https://en.wikipedia.org/wiki/Frequency-shift_keying), with 26.37kHz deviation
+* 433.923MHz center signal
+* [2-FSK](https://en.wikipedia.org/wiki/Frequency-shift_keying), with 26.37kHz deviation
 * 40611bps data rate (before manchester)
 * [Manchester](https://en.wikipedia.org/wiki/Manchester_code) coded, non-ieee
 * 8-bit crc
