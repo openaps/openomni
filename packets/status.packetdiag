@@ -4,4 +4,6 @@ colwidth=32
 32-34: packet_type
 35-39: sequence
 40-71: address2
+72-79: ??
+80-87: message_type?
 }
