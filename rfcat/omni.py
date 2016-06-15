@@ -23,7 +23,7 @@ def flip_bytes(data):
 
 def quick_setup(device=d, bitrate=40000, check=True):
 	"""quick_setup is used to setup rfcat to quickly decode omnipod signals"""
-	print "Usage: quick_setup(rfcat_device, bitrate, check_valid=False)"
+	print "Usage: quick_setup(rfcat_device=d, bitrate=40000, check_valid=True)"
 	device.setFreq(433.91e6)
 	device.setMdmModulation(MOD_2FSK)
 	device.setPktPQT(1)
