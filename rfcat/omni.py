@@ -27,11 +27,12 @@ def quick_setup(device=d, bitrate=40000, check=True):
 	device.setFreq(433.91e6)
 	device.setMdmModulation(MOD_2FSK)
 	device.setPktPQT(1)
-	device.setMdmSyncMode(2)
+	device.setMdmSyncMode(SYNCM_CARRIER_16_of_16)
 	device.setMdmSyncWord(0x54c3)
-	device.makePktFLEN(50)
+	device.makePktFLEN(40)
 	device.setEnableMdmManchester(True)
 	device.setMdmDRate(bitrate)
+	device.setRFRegister(0xdf18, 0x70)
 	print "Bitrate: %s" % bitrate
 
 	while not keystop():
