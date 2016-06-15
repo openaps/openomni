@@ -1,0 +1,25 @@
+#!/usr/bin/env python2
+
+import argparse
+import binascii
+from omnipod import Packet
+
+def main(options=None):
+    parser = argparse.ArgumentParser(description='Print out structured version of packet (given as a hex string).')
+    parser.add_argument('data', metavar='data', type=str, nargs='+',
+                        help='data as a hex string')
+    parser.add_argument('--json', action='store_true',
+                        help='print as json (default: text line)')
+
+    args = parser.parse_args()
+    packet = Packet.from_hex(args.data[0])
+
+
+    # compact style:
+    if args.json:
+        print packet.as_json()
+    else:
+        print packet
+
+if __name__ == '__main__':
+    main()
