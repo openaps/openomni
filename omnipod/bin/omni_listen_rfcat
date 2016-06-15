@@ -1,6 +1,5 @@
 # Omnipod Quick Setup for rfcat
 #
-# pip install crccheck
 # sudo rfcat -r
 # %run omni.py
 # quick_setup(d, 40000, 1)
@@ -39,7 +38,7 @@ def quick_setup(device=d, bitrate=40000, check=True):
 			pkt,ts = device.RFrecv(timeout=80000)
 			if check == 1 and packet_valid(pkt):
 
-				x = 0	
+				x = 0
 				while x < len(pkt):
 					packet = flip_bytes(pkt[:len(pkt) - (x + 1)].encode('hex'))
 					data = bytearray.fromhex(packet)
@@ -48,7 +47,7 @@ def quick_setup(device=d, bitrate=40000, check=True):
 						packet_length = (len(packet) / 2) + 1
 						print "Len: " + str(packet_length),
 						print "CRC: " + crc,
-						print "ID: %s" % flip_bytes(pkt[0:3].encode('hex')), 
+						print "ID: %s" % flip_bytes(pkt[0:3].encode('hex')),
 						print "\tTYPE|SEQ: %s" % bin(int(flip_bytes(pkt[4].encode('hex')),16)),
 						print "\tID2: %s" % flip_bytes(pkt[5:8].encode('hex')),
 						print "\t?: %s" % flip_bytes(pkt[9].encode('hex')),
@@ -62,6 +61,6 @@ def quick_setup(device=d, bitrate=40000, check=True):
 		except ChipconUsbTimeoutException:
 			print "ChipconUsbTimeoutException"
 			time.sleep(0.5)
-			
+
 
 	sys.stdin.read(1)
