@@ -24,7 +24,6 @@ def quick_setup(device, bitrate=40000, check=True):
 		try:
 			pkt,ts = device.RFrecv(timeout=80000)
                         pkt = flip_bytes(pkt)
-                        #print "Got pkt: %s" % pkt.encode('hex')
 
 			x = 0
 			while x < len(pkt):

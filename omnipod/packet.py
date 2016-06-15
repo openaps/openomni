@@ -11,8 +11,8 @@ class Packet:
         self.packet_type = byte5 >> 5
         self.sequence = byte5 & 0b11111
         self.pod_address_2 = data[5:9].encode("hex")
-        self.body = ""
-        self.message_type = ""
+        self.body = None
+        self.message_type = None
         if len(data) > 10:
             self.byte10 = ord(data[9])  # ??
             self.message_type = ord(data[10])
@@ -30,15 +30,24 @@ class Packet:
     	return binascii.hexlify(bytearray(bytes))
 
     def __str__(self):
-        return "ID1:%s PTYPE:%s SEQ:%d ID2:%s MTYPE:%02x BODY:%s CRC:%02x" % (
-            self.pod_address_1,
-            format(self.packet_type, '#05b')[2:],
-            self.sequence,
-            self.pod_address_2,
-            self.message_type,
-            self.body.encode('hex'),
-            self.crc
-        )
+        if self.body == None:
+            return "ID1:%s PTYPE:%s SEQ:%d ID2:%s CRC:%02x" % (
+                self.pod_address_1,
+                format(self.packet_type, '#05b')[2:],
+                self.sequence,
+                self.pod_address_2,
+                self.crc
+            )
+        else:
+            return "ID1:%s PTYPE:%s SEQ:%d ID2:%s MTYPE:%02x BODY:%s CRC:%02x" % (
+                self.pod_address_1,
+                format(self.packet_type, '#05b')[2:],
+                self.sequence,
+                self.pod_address_2,
+                self.message_type,
+                self.body.encode('hex'),
+                self.crc
+            )
 
     def as_json(self):
         obj = {
