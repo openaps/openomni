@@ -6,10 +6,11 @@ class Packet:
         self.data = data
         if len(data) < 10:
             return
-        self.pod_address_1 = data[0:4].encode("hex")
+        self.length = format(len(data),'02')
+	self.pod_address_1 = data[0:4].encode("hex")
         byte5 = ord(data[4])
         self.packet_type = byte5 >> 5
-        self.sequence = byte5 & 0b11111
+        self.sequence = format((byte5 & 0b11111), '02')
         self.pod_address_2 = data[5:9].encode("hex")
         self.body = None
         self.message_type = None
@@ -31,16 +32,18 @@ class Packet:
 
     def __str__(self):
         if self.body == None:
-            return "ID1:%s PTYPE:%s SEQ:%d ID2:%s CRC:%02x" % (
-                self.pod_address_1,
+            return "L:%s ID1:%s PTYPE:%s SEQ:%s ID2:%s CRC:%02x" % (
+                self.length,
+		self.pod_address_1,
                 format(self.packet_type, '#05b')[2:],
                 self.sequence,
                 self.pod_address_2,
                 self.crc
             )
         else:
-            return "ID1:%s PTYPE:%s SEQ:%d ID2:%s MTYPE:%02x BODY:%s CRC:%02x" % (
-                self.pod_address_1,
+            return "L:%s ID1:%s PTYPE:%s SEQ:%s ID2:%s MTYPE:%02x BODY:%s CRC:%02x" % (
+                self.length,
+		self.pod_address_1,
                 format(self.packet_type, '#05b')[2:],
                 self.sequence,
                 self.pod_address_2,
