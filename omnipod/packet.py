@@ -1,8 +1,11 @@
 import json
+import crccheck
 
 class Packet:
     def __init__(self, data):
         self.data = data
+        if len(data) < 10:
+            return
         self.pod_address_1 = data[0:4].encode("hex")
         byte5 = ord(data[4])
         self.packet_type = byte5 >> 5
@@ -49,3 +52,10 @@ class Packet:
             "raw_packet": self.data.encode('hex'),
         }
         return json.dumps(obj, sort_keys=True,indent=4, separators=(',', ': '))
+
+    def is_valid(self):
+        return len(self.data) >= 10 and self.crc_ok()
+    
+    def crc_ok(self):
+        computed_crc = crccheck.crc.Crc8.calc(bytearray(self.data[:-1]))
+        return self.crc == computed_crc
