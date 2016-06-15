@@ -26,7 +26,7 @@ For hardware based demodulation, you can use a cc111x based device like one of t
 
 #### SOFTWARE for capturing/decoding SDR signals
   * [SDR#](http://www.rtl-sdr.com/tag/sdrsharp) - to capture sdr iq data
-  * [omnipod_decode](https://github.com/ps2/omnipod_decode) python decoding utilities. This code will extract packets of correct length from raw sdr iq data, and will verify CRCs.
+  * [omnipod_decode](https://github.com/ps2/omnipod_rf) This code will extract packets of correct length from raw sdr iq data, and will verify CRCs.
   * [baudline](http://www.baudline.com/) will show signal characteristics
 
 #### SOFTWARE for doing hardware based demodulation:
