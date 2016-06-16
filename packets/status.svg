@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg viewBox="0 0 896 240" xmlns="http://www.w3.org/2000/svg" xmlns:inkspace="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg viewBox="0 0 896 320" xmlns="http://www.w3.org/2000/svg" xmlns:inkspace="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink">
   <defs id="defs_block">
     <filter height="1.504" id="filter_blur" inkspace:collect="always" width="1.1575" x="-0.07875" y="-0.252">
       <feGaussianBlur id="feGaussianBlur3780" inkspace:collect="always" stdDeviation="4.2" />
@@ -13,8 +13,11 @@ colwidth=32
 32-34: packet_type
 35-39: sequence
 40-71: pod_address_2
-72-79: ??
-80-87: message_type?
+72-79: byte9?
+80-87: body_length
+88-111: body
+112-127: last_two_bytes?
+128-135: crc
 }
 </desc>
   <path d="M 64 48 L 64 80" fill="none" stroke="rgb(0,0,0)" />
@@ -82,17 +85,41 @@ colwidth=32
   <path d="M 448 160 L 448 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 448 200 L 256 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 256 200 L 256 160" fill="none" stroke="rgb(0,0,0)" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="14" x="352" y="185">??</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="36" x="352" y="186">byte9?</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="192" x="448" y="160" />
   <path d="M 448 160 L 640 160" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 640 160 L 640 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 640 200 L 448 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 448 200 L 448 160" fill="none" stroke="rgb(0,0,0)" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="79" x="544" y="187">message_type?</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="60" x="544" y="186">body_length</text>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="384" x="64" y="200" />
+  <path d="M 64 200 L 448 200" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 448 200 L 448 240" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 448 240 L 64 240" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 64 240 L 64 200" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="24" x="256" y="226">body</text>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="384" x="448" y="200" />
+  <path d="M 448 200 L 832 200" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 832 200 L 832 240" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 832 240 L 448 240" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 448 240 L 448 200" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="82" x="640" y="226">last_two_bytes?</text>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="192" x="64" y="240" />
+  <path d="M 64 240 L 256 240" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 256 240 L 256 280" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 256 280 L 64 280" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 64 280 L 64 240" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="16" x="160" y="265">crc</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="576" x="256" y="120" />
   <path d="M 256 120 L 832 120" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 120 L 832 160" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
   <path d="M 832 160 L 256 160" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 256 160 L 256 120" fill="none" stroke="rgb(0,0,0)" />
   <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="75" x="544" y="146">pod_address_2</text>
+  <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="192" x="640" y="160" />
+  <path d="M 640 160 L 832 160" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 832 160 L 832 200" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
+  <path d="M 832 200 L 640 200" fill="none" stroke="rgb(0,0,0)" />
+  <path d="M 640 200 L 640 160" fill="none" stroke="rgb(0,0,0)" />
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="24" x="736" y="186">body</text>
 </svg>
