@@ -32,7 +32,6 @@ def quick_setup(device=d, bitrate=40625, check=True):
 	device.setEnableMdmManchester(True)
 	device.setMdmDRate(bitrate)
 	device.setRFRegister(0xdf18, 0x70)
-	print "Bitrate: %s" % bitrate
 
 	while not keystop():
 		try:
@@ -48,12 +47,21 @@ def quick_setup(device=d, bitrate=40625, check=True):
 						packet_length = (len(packet) / 2) + 1
 						print   "ID1: %s" % flip_bytes(pkt[0:3].encode('hex')), 
 						print "\tT|S: %s" % flip_bytes(pkt[4].encode('hex')),
+						type_int = int("0x" + flip_bytes(pkt[4].encode('hex')),0)
+						type_bin = format(type_int, '08b')
+						if type_bin[:3] == '101':
+							print " PDM ",
+						if type_bin[:3] == '111':
+							print " POD ",
+						if type_bin[:3] == '010':
+							print " ACK ",
 						print "\tID2: %s" % flip_bytes(pkt[5:8].encode('hex')),
 						print "\t???: %s" % flip_bytes(pkt[9].encode('hex')),
 						print "\tLEN: %s" % flip_bytes(pkt[10].encode('hex')),
 						print "\tPAY: %s" % flip_bytes(pkt[11:packet_length-3].encode('hex')),
 						print "\tTSP: %s" % flip_bytes(pkt[packet_length-2:packet_length].encode('hex')),
 						print   "CRC: " + crc
+						print flip_bytes(pkt[:len(pkt)-(x)].encode('hex')) + "\n"
 					x += 1
 
 			elif check == 0:
