@@ -1,5 +1,5 @@
-# omnidocs
-Docs related to better understanding omni device communication.
+# OpenOmni
+Documentation and python library for decoding omnipod communications.
 
 
 #### Current understanding of signal:
