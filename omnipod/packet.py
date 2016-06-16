@@ -4,6 +4,7 @@ import crccheck
 class Packet:
     def __init__(self, data):
         self.data = data
+        self.body = None
         if len(data) < 10:
             return
         self.length = format(len(data),'02')
@@ -12,10 +13,9 @@ class Packet:
         self.packet_type = byte5 >> 5
         self.sequence = format((byte5 & 0b11111), '02')
         self.pod_address_2 = data[5:9].encode("hex")
-        self.body = None
         self.message_type = None
         if len(data) > 10:
-            self.byte10 = ord(data[9])  # ??
+            self.body_len = ord(data[9]) 
             self.message_type = ord(data[10])
             self.body = data[11:-1]
         self.crc = ord(data[-1])
@@ -41,12 +41,13 @@ class Packet:
                 self.crc
             )
         else:
-            return "L:%s ID1:%s PTYPE:%s SEQ:%s ID2:%s MTYPE:%02x BODY:%s CRC:%02x" % (
+            return "L:%s ID1:%s PTYPE:%s SEQ:%s ID2:%s BLEN:%s MTYPE:%02x BODY:%s CRC:%02x" % (
                 self.length,
 		self.pod_address_1,
                 format(self.packet_type, '#05b')[2:],
                 self.sequence,
                 self.pod_address_2,
+                self.body_len,
                 self.message_type,
                 self.body.encode('hex'),
                 self.crc
@@ -58,6 +59,7 @@ class Packet:
             "packet_type": self.packet_type,
             "sequence": self.sequence,
             "pod_address_2": self.pod_address_2,
+            "body_len": self.body_len,
             "message_type": self.message_type,
             "body": self.body.encode('hex'),
             "crc": self.crc,
