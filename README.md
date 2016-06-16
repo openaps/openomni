@@ -12,12 +12,12 @@ Docs related to better understanding omni device communication.
 
 #### Current understanding of command bytes:
 
-Status: 0e01
-Bolus: 1a0e
-Temp Basal: 1d28
-Resume Basal Insulin: 1a1e
-Basal Program: 1a1* 
-Cancel Bolus: 1f05
+* Status: 0e01
+* Bolus: 1a0e
+* Temp Basal: 1d28
+* Resume Basal Insulin: 1a1e
+* Basal Program: 1a1# 
+* Cancel Bolus: 1f05
 
 =======
 ##### ** Please note the below is notes about a project created to better understand how the omnipod communicates **
