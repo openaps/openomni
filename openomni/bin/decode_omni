@@ -2,7 +2,7 @@
 
 import argparse
 import binascii
-from omnipod import Packet
+from openomni import Packet
 
 def main(options=None):
     parser = argparse.ArgumentParser(description='Print out structured version of packet (given as a hex string).')
