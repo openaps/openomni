@@ -2,6 +2,7 @@
 from rflib import *
 import binascii
 import time
+import datetime
 from openomni import Packet
 
 def flip_bytes(data):
@@ -25,12 +26,13 @@ def quick_setup(device, bitrate=40000, check=True):
 		try:
 			pkt,ts = device.RFrecv(timeout=80000)
                         pkt = flip_bytes(pkt)
+			rcv_time = datetime.datetime.now()
 
 			x = 0
 			while x < len(pkt):
 				packet = Packet(pkt[:len(pkt) - (x + 1)])
 				if packet.is_valid():
-					print packet
+					print "%s %s" % (rcv_time.isoformat(), packet)
 				x += 1
 
 		except ChipconUsbTimeoutException:
@@ -47,4 +49,3 @@ def main(options=None):
 
 if __name__ == '__main__':
 	main()
-
