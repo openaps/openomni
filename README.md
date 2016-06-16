@@ -14,7 +14,7 @@ Documentation and python library for decoding omnipod communications.
 
 * Status: 0e01
 * Bolus: 1a0e
-* Temp Basal: 1d28
+* Temp Basal: 1a0e
 * Resume Basal Insulin: 1a1e
 * Basal Program: 1a1# 
 * Cancel Bolus: 1f05
