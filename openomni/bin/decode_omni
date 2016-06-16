@@ -2,7 +2,7 @@
 
 import argparse
 import binascii
-from omnipod import Packet
+from openomni import Packet
 
 def main(options=None):
     parser = argparse.ArgumentParser(description='Print out structured version of packet (given as a hex string).')
@@ -15,11 +15,14 @@ def main(options=None):
     packet = Packet.from_hex(args.data[0])
 
 
-    # compact style:
-    if args.json:
-        print packet.as_json()
+    if packet.is_valid():
+        if args.json:
+            print packet.as_json()
+        else:
+            # compact style:
+            print packet
     else:
-        print packet
+      print "Invalid packet"
 
 if __name__ == '__main__':
     main()

@@ -2,7 +2,7 @@
 from rflib import *
 import binascii
 import time
-from omnipod import Packet
+from openomni import Packet
 
 def flip_bytes(data):
 	"""flip_bytes inverts bytes"""
