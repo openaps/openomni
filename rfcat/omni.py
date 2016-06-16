@@ -46,7 +46,7 @@ def quick_setup(device=d, bitrate=40625, check=True):
 					if crc == "0x" + flip_bytes(pkt[len(pkt) - (x + 1):len(pkt) - x].encode('hex')):
 						packet_length = (len(packet) / 2) + 1
 						print   "ID1: %s" % flip_bytes(pkt[0:3].encode('hex')), 
-						print "\tT|S: %s" % flip_bytes(pkt[4].encode('hex')),
+						print "\tT|S: %s" % format(int("0x"+flip_bytes(pkt[4].encode('hex')),0), '08b'),
 						type_int = int("0x" + flip_bytes(pkt[4].encode('hex')),0)
 						type_bin = format(type_int, '08b')
 						if type_bin[:3] == '101':
@@ -56,7 +56,8 @@ def quick_setup(device=d, bitrate=40625, check=True):
 						if type_bin[:3] == '010':
 							print " ACK ",
 						print "\tID2: %s" % flip_bytes(pkt[5:8].encode('hex')),
-						print "\t???: %s" % flip_bytes(pkt[9].encode('hex')),
+						print "\t???: %s" % format(int("0x"+flip_bytes(pkt[9].encode('hex')),0), '08b'),
+						#print "\t???: %s" % flip_bytes(pkt[9].encode('hex')),
 						print "\tLEN: %s" % flip_bytes(pkt[10].encode('hex')),
 						print "\tPAY: %s" % flip_bytes(pkt[11:packet_length-3].encode('hex')),
 						print "\tTSP: %s" % flip_bytes(pkt[packet_length-2:packet_length].encode('hex')),
