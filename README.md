@@ -6,9 +6,18 @@ Docs related to better understanding omni device communication.
 
 * 433.923MHz center signal
 * [2-FSK](https://en.wikipedia.org/wiki/Frequency-shift_keying), with 26.37kHz deviation
-* 40611bps data rate (before manchester)
+* 40625bps data rate (before manchester)
 * [Manchester](https://en.wikipedia.org/wiki/Manchester_code) coded, non-ieee
 * 8-bit crc
+
+#### Current understanding of command bytes:
+
+* Status: 0e01
+* Bolus: 1a0e
+* Temp Basal: 1d28
+* Resume Basal Insulin: 1a1e
+* Basal Program: 1a1# 
+* Cancel Bolus: 1f05
 
 =======
 ##### ** Please note the below is notes about a project created to better understand how the omnipod communicates **

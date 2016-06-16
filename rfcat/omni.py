@@ -3,7 +3,7 @@
 # pip install crccheck
 # sudo rfcat -r
 # %run omni.py
-# quick_setup(d, 40000, 1)
+# quick_setup(d, 40625, 1)
 
 from rflib import *
 import binascii
@@ -21,9 +21,8 @@ def flip_bytes(data):
 	bytes = map(lambda x: ord(x) ^ 0xff, data.decode("hex"))
 	return binascii.hexlify(bytearray(bytes))
 
-def quick_setup(device=d, bitrate=40000, check=True):
+def quick_setup(device=d, bitrate=40625, check=True):
 	"""quick_setup is used to setup rfcat to quickly decode omnipod signals"""
-	print "Usage: quick_setup(rfcat_device=d, bitrate=40000, check_valid=True)"
 	device.setFreq(433.91e6)
 	device.setMdmModulation(MOD_2FSK)
 	device.setPktPQT(1)
@@ -37,7 +36,7 @@ def quick_setup(device=d, bitrate=40000, check=True):
 
 	while not keystop():
 		try:
-			pkt,ts = device.RFrecv(timeout=80000)
+			pkt,ts = device.RFrecv(timeout=50000)
 			if check == 1 and packet_valid(pkt):
 
 				x = 0	
@@ -47,14 +46,14 @@ def quick_setup(device=d, bitrate=40000, check=True):
 					crc = "0x{:02x}".format(crccheck.crc.Crc8.calc(data))
 					if crc == "0x" + flip_bytes(pkt[len(pkt) - (x + 1):len(pkt) - x].encode('hex')):
 						packet_length = (len(packet) / 2) + 1
-						print "Len: " + str(packet_length),
-						print "CRC: " + crc,
-						print "ID: %s" % flip_bytes(pkt[0:3].encode('hex')), 
-						print "\tTYPE|SEQ: %s" % bin(int(flip_bytes(pkt[4].encode('hex')),16)),
+						print   "ID1: %s" % flip_bytes(pkt[0:3].encode('hex')), 
+						print "\tT|S: %s" % flip_bytes(pkt[4].encode('hex')),
 						print "\tID2: %s" % flip_bytes(pkt[5:8].encode('hex')),
-						print "\t?: %s" % flip_bytes(pkt[9].encode('hex')),
-						print "\tCMD?: %s" % flip_bytes(pkt[10].encode('hex')),
-						print "\t?: %s" % flip_bytes(pkt[11:packet_length].encode('hex'))
+						print "\t???: %s" % flip_bytes(pkt[9].encode('hex')),
+						print "\tLEN: %s" % flip_bytes(pkt[10].encode('hex')),
+						print "\tPAY: %s" % flip_bytes(pkt[11:packet_length-3].encode('hex')),
+						print "\tTSP: %s" % flip_bytes(pkt[packet_length-2:packet_length].encode('hex')),
+						print   "CRC: " + crc
 					x += 1
 
 			elif check == 0:
