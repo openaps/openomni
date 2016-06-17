@@ -29,8 +29,8 @@ class Packet:
         if len(data) > 10:
             self.byte9 = ord(data[9])
             self.body_len = ord(data[10])
-            self.body = data[11:-3]
-            self.last_two_bytes = data[-3:-1]
+            self.message_type = data[11:13]
+            self.body = data[13:-1]
         self.crc = ord(data[-1])
 
     @staticmethod
@@ -53,15 +53,15 @@ class Packet:
                 self.crc
             )
         else:
-            return "ID1:%s PTYPE:%s SEQ:%s ID2:%s B9:%02x BLEN:%s BODY:%s L2B:%s CRC:%02x" % (
+            return "ID1:%s PTYPE:%s SEQ:%s ID2:%s B9:%02x BLEN:%s MTYPE:%s BODY:%s CRC:%02x" % (
 		self.pod_address_1,
                 self.packet_type_str,
                 self.sequence,
                 self.pod_address_2,
                 self.byte9,
                 self.body_len,
+                self.message_type.encode('hex'),
                 self.body.encode('hex'),
-                self.last_two_bytes.encode('hex'),
                 self.crc
             )
 
@@ -74,8 +74,8 @@ class Packet:
             "pod_address_2": self.pod_address_2,
             "byte9": self.byte9,
             "body_len": self.body_len,
+            "message_type": self.message_type.encode('hex'),
             "body": self.body.encode('hex'),
-            "last_two_bytes": self.last_two_bytes.encode('hex'),
             "crc": self.crc,
             "raw_packet": self.data.encode('hex'),
         }
