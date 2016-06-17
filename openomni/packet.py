@@ -2,6 +2,12 @@ import json
 import crccheck
 
 class Packet:
+    PACKET_TYPES = {
+        0b101: "PDM",
+        0b111: "POD",
+        0b010: "ACK"
+    }
+
     def __init__(self, data):
         self.data = data
         self.body = None
@@ -10,7 +16,13 @@ class Packet:
         self.length = format(len(data),'02')
         self.pod_address_1 = data[0:4].encode("hex")
         byte5 = ord(data[4])
+
         self.packet_type = byte5 >> 5
+        if self.packet_type in Packet.PACKET_TYPES:
+            self.packet_type_str = Packet.PACKET_TYPES.get(self.packet_type)
+        else:
+            self.packet_type_str = format(self.packet_type, '#05b')[2:]
+
         self.sequence = format((byte5 & 0b11111), '02')
         self.pod_address_2 = data[5:9].encode("hex")
         self.message_type = None
@@ -35,7 +47,7 @@ class Packet:
         if self.body == None:
             return "ID1:%s PTYPE:%s SEQ:%s ID2:%s CRC:%02x" % (
 		self.pod_address_1,
-                format(self.packet_type, '#05b')[2:],
+                self.packet_type_str,
                 self.sequence,
                 self.pod_address_2,
                 self.crc
@@ -43,7 +55,7 @@ class Packet:
         else:
             return "ID1:%s PTYPE:%s SEQ:%s ID2:%s B9:%02x BLEN:%s BODY:%s L2B:%s CRC:%02x" % (
 		self.pod_address_1,
-                format(self.packet_type, '#05b')[2:],
+                self.packet_type_str,
                 self.sequence,
                 self.pod_address_2,
                 self.byte9,
@@ -57,6 +69,7 @@ class Packet:
         obj = {
             "pod_address_1": self.pod_address_1,
             "packet_type": self.packet_type,
+            "packet_type_str": self.packet_type_str,
             "sequence": self.sequence,
             "pod_address_2": self.pod_address_2,
             "byte9": self.byte9,
