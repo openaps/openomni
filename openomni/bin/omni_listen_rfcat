@@ -38,7 +38,6 @@ def quick_setup(device, bitrate=40625, check=True):
 				x += 1
 
 		except ChipconUsbTimeoutException:
-			print "ChipconUsbTimeoutException"
 			time.sleep(0.5)
 
 
