@@ -11,7 +11,7 @@ def flip_bytes(data):
 	bytes = map(lambda x: ord(x) ^ 0xff, data)
 	return bytearray(bytes).__str__()
 
-def quick_setup(device, bitrate=40000, check=True):
+def quick_setup(device, bitrate=40625, check=True):
 	"""quick_setup is used to setup rfcat to quickly decode omnipod signals"""
 	device.setFreq(433.91e6)
 	device.setMdmModulation(MOD_2FSK)
