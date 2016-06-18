@@ -6,7 +6,7 @@
  * 101 = PDM
  * 111 = POD
  * 010 = ACK
- * 100 = ?? body length (3,6) (seen from PDM)
+ * 100 = Packet Continued
 
 #### Status Packet Exchange 
 
@@ -33,5 +33,5 @@
  * PDM (1a0e) (Basal Change Request)
  * ACK
  * 100
- * POD (1d29) (Basal Confirmation)
+ * POD (1d**) (Basal Confirmation)
  * ACK

@@ -41,7 +41,7 @@ For hardware based demodulation, you can use a cc111x based device like one of t
 #### SOFTWARE for doing hardware based demodulation:
 
   * [rfcat](https://bitbucket.org/atlas0fd00m/rfcat)
-  * [omni.py](https://github.com/openaps/omnidocs/blob/master/rfcat/omni.py) - tool to configure rfcat to decode omnipod signals
+  * [omni.py](https://github.com/openaps/openomni/blob/master/rfcat/omni.py) - tool to explore omnipod signals with rfcat
   * [SmartRF Studio](http://www.ti.com/tool/smartrftm-studio) and an [omnipod configuration](https://github.com/ps2/omnipod_decode/blob/master/cc1110_24mhz.xml) for it.
   
 
@@ -66,6 +66,11 @@ We may add more content to the wiki here [Wiki](https://github.com/openaps/omnid
 * [Find out more about the NightScout community here.](https://github.com/nightscout)
 * [Find out more about the OpenAPS open source DIY artificial pancreas project here.](https://openaps.org)
 * Thanks for supporting this effort!!
+
+#### Rules for Contributing to this Repository
+
+* All code updates require the use of Pull Requests
+* Documentation updates can be made directly on master
 
 ***
 https://files.slack.com/files-pri/T0B2X082E-F0D390KTP/download/pod_datacap_23oct2015.odt
