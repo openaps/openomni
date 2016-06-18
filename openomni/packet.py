@@ -2,35 +2,49 @@ import json
 import crccheck
 
 class Packet:
-    PACKET_TYPES = {
-        0b101: "PDM",
-        0b111: "POD",
-        0b010: "ACK"
+
+    PACKET_TYPE_PDM = 0b101
+    PACKET_TYPE_POD = 0b111
+    PACKET_TYPE_ACK = 0b010
+    PACKET_TYPE_CON = 0b100
+
+    PACKET_TYPE_STRINGS = {
+        PACKET_TYPE_PDM: "PDM",
+        PACKET_TYPE_POD: "POD",
+        PACKET_TYPE_ACK: "ACK",
+        PACKET_TYPE_CON: "CON",
     }
 
     def __init__(self, data):
         self.data = data
-        self.body = None
         if len(data) < 10:
             return
+        self.body = None
         self.length = format(len(data),'02')
         self.pod_address_1 = data[0:4].encode("hex")
         byte5 = ord(data[4])
 
         self.packet_type = byte5 >> 5
-        if self.packet_type in Packet.PACKET_TYPES:
-            self.packet_type_str = Packet.PACKET_TYPES.get(self.packet_type)
+        if self.packet_type in Packet.PACKET_TYPE_STRINGS:
+            self.packet_type_str = Packet.PACKET_TYPE_STRINGS.get(self.packet_type)
         else:
             self.packet_type_str = format(self.packet_type, '#05b')[2:]
 
         self.sequence = format((byte5 & 0b11111), '02')
         self.pod_address_2 = data[5:9].encode("hex")
-        self.message_type = None
-        if len(data) > 10:
+        if len(self.data) > 13 and self.packet_type != Packet.PACKET_TYPE_ACK:
             self.byte9 = ord(data[9])
             self.body_len = ord(data[10])
             self.message_type = data[11:13]
             self.body = data[13:-1]
+        else:
+            self.byte9 = None
+            self.body_len = None
+            self.message_type = None
+            self.body = None
+
+        if self.packet_type == Packet.PACKET_TYPE_CON:
+            self.body_continuation = data[5:-1]
         self.crc = ord(data[-1])
 
     @staticmethod
@@ -44,26 +58,36 @@ class Packet:
     	return binascii.hexlify(bytearray(bytes))
 
     def __str__(self):
-        if self.body == None:
+        if not self.is_valid():
+            return "Invalid Packet"
+
+        if self.packet_type == Packet.PACKET_TYPE_ACK:
             return "ID1:%s PTYPE:%s SEQ:%s ID2:%s CRC:%02x" % (
-		self.pod_address_1,
+                self.pod_address_1,
                 self.packet_type_str,
                 self.sequence,
                 self.pod_address_2,
-                self.crc
+                self.crc,
             )
-        else:
-            return "ID1:%s PTYPE:%s SEQ:%s ID2:%s B9:%02x BLEN:%s MTYPE:%s BODY:%s CRC:%02x" % (
-		self.pod_address_1,
+        if self.packet_type == Packet.PACKET_TYPE_CON:
+            return "ID1:%s PTYPE:%s SEQ:%s CON:%s CRC:%02x" % (
+                self.pod_address_1,
                 self.packet_type_str,
                 self.sequence,
-                self.pod_address_2,
-                self.byte9,
-                self.body_len,
-                self.message_type.encode('hex'),
-                self.body.encode('hex'),
-                self.crc
+                self.body_continuation.encode('hex'),
+                self.crc,
             )
+        return "ID1:%s PTYPE:%s SEQ:%s ID2:%s B9:%02x BLEN:%s MTYPE:%s BODY:%s CRC:%02x" % (
+            self.pod_address_1,
+            self.packet_type_str,
+            self.sequence,
+            self.pod_address_2,
+            self.byte9,
+            self.body_len,
+            self.message_type.encode('hex'),
+            self.body.encode('hex'),
+            self.crc,
+        )
 
     def as_json(self):
         obj = {
