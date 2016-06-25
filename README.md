@@ -13,6 +13,8 @@ Documentation and python library for decoding omnipod communications.
 #### Current understanding of command bytes:
 
 * Status: 0e01
+* POD Status Response: 1d18
+* POD Status Response with Temp Basal Running: 1d28
 * Bolus: 1a0e
 * Temp Basal: 1a0e
 * Resume Basal Insulin: 1a1e
