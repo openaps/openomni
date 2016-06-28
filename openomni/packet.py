@@ -16,6 +16,7 @@ class Packet:
     }
 
     def __init__(self, data):
+        self.received_at = None
         self.data = data
         if len(data) < 10:
             return
@@ -30,7 +31,7 @@ class Packet:
         else:
             self.packet_type_str = format(self.packet_type, '#05b')[2:]
 
-        self.sequence = format((byte5 & 0b11111), '02')
+        self.sequence = byte5 & 0b11111
         self.pod_address_2 = data[5:9].encode("hex")
         if len(self.data) > 13 and self.packet_type != Packet.PACKET_TYPE_ACK:
             self.byte9 = ord(data[9])
@@ -61,33 +62,47 @@ class Packet:
         if not self.is_valid():
             return "Invalid Packet"
 
-        if self.packet_type == Packet.PACKET_TYPE_ACK:
-            return "ID1:%s PTYPE:%s SEQ:%s ID2:%s CRC:%02x" % (
+        if self.received_at is not None:
+            base_str = self.received_at.isoformat() + " "
+        else:
+            base_str = ""
+
+        base_str += "ID1:%s PTYPE:%s SEQ:%02s" % (
                 self.pod_address_1,
                 self.packet_type_str,
-                self.sequence,
+                self.sequence, '02',
+            )
+
+        if self.packet_type == Packet.PACKET_TYPE_ACK:
+            return "%s ID2:%s CRC:%02x" % (
+                base_str,
                 self.pod_address_2,
                 self.crc,
             )
         if self.packet_type == Packet.PACKET_TYPE_CON:
-            return "ID1:%s PTYPE:%s SEQ:%s CON:%s CRC:%02x" % (
-                self.pod_address_1,
-                self.packet_type_str,
-                self.sequence,
+            return "%s CON:%s CRC:%02x" % (
+                base_str,
                 self.body_continuation.encode('hex'),
                 self.crc,
             )
-        return "ID1:%s PTYPE:%s SEQ:%s ID2:%s B9:%02x BLEN:%s MTYPE:%s BODY:%s CRC:%02x" % (
-            self.pod_address_1,
-            self.packet_type_str,
-            self.sequence,
-            self.pod_address_2,
-            self.byte9,
-            self.body_len,
-            self.message_type.encode('hex'),
-            self.body.encode('hex'),
-            self.crc,
-        )
+        if self.body != None:
+            # All other packets with enough bytes to have a body
+            return "%s ID2:%s B9:%02x BLEN:%s MTYPE:%s BODY:%s CRC:%02x" % (
+                base_str,
+                self.pod_address_2,
+                self.byte9,
+                self.body_len,
+                self.message_type.encode('hex'),
+                self.body.encode('hex'),
+                self.crc,
+            )
+        else:
+            # All other packets without body
+            return "%s ID2:%s CRC:%02x" % (
+                base_str,
+                self.pod_address_2,
+                self.crc,
+            )
 
     def as_json(self):
         obj = {
@@ -96,13 +111,18 @@ class Packet:
             "packet_type_str": self.packet_type_str,
             "sequence": self.sequence,
             "pod_address_2": self.pod_address_2,
-            "byte9": self.byte9,
-            "body_len": self.body_len,
-            "message_type": self.message_type.encode('hex'),
-            "body": self.body.encode('hex'),
             "crc": self.crc,
             "raw_packet": self.data.encode('hex'),
         }
+        if self.byte9 is not None:
+            obj["byte9"] = self.byte9
+        if self.body is not None:
+            obj["body"] = self.body.encode('hex')
+            obj["body_len"] = self.body_len
+        if self.message_type is not None:
+            obj["message_type"] = self.message_type.encode('hex')
+        if self.received_at is not None:
+            obj["received_at"] = self.received_at.isoformat()
         return json.dumps(obj, sort_keys=True,indent=4, separators=(',', ': '))
 
     def is_valid(self):
