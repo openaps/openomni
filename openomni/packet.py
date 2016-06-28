@@ -70,7 +70,7 @@ class Packet:
         base_str += "ID1:%s PTYPE:%s SEQ:%02s" % (
                 self.pod_address_1,
                 self.packet_type_str,
-                self.sequence, '02',
+                self.sequence,
             )
 
         if self.packet_type == Packet.PACKET_TYPE_ACK:
