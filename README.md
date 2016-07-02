@@ -29,6 +29,7 @@ Prerequisites:
 * [pip](https://pip.readthedocs.io/en/stable/installing/)
 * [rfcat](https://bitbucket.org/atlas0fd00m/rfcat)
 * PyUSB - you can install this with pip: `pip install pyusb`, or `sudo pip install pyusb`
+* On mac, you'll need libusb. `brew install libusb`
 
 You can install openomni in editable mode like this:
 ```
