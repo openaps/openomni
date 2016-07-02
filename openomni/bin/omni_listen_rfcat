@@ -27,7 +27,7 @@ def quick_setup(device, bitrate=40625, json=False):
 	while not keystop():
 		try:
 			pkt,ts = device.RFrecv(timeout=80000)
-                        pkt = flip_bytes(pkt)
+			pkt = Packet.flip_bytes(pkt)
 			rcv_time = datetime.datetime.now()
 
 			x = 0

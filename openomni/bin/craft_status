@@ -1,0 +1,33 @@
+#!/usr/bin/env python2
+
+import argparse
+from openomni import Packet
+from rflib import *
+
+def main(options=None):
+    parser = argparse.ArgumentParser(description='Send status packet.')
+
+    args = parser.parse_args()
+
+    d = RfCat(0, debug=False)
+
+    print "Sleeping for 5 seconds..."
+    time.sleep(5)
+
+    # Start with seen packet:
+    status_req = Packet("1f02d5afaa1f02d5af38030e01008195d3".decode('hex'))
+    print "Packet = %s" % status_req
+
+    # We can update sequence and other bytes here:
+    #status_req.sequence = 9
+    #status_req.body = "008195".decode('hex')
+
+    # Transmit data!
+    tx_data = status_req.tx_data()
+    print "Sending %s" % tx_data.encode('hex')
+    flipped = Packet.flip_bytes(tx_data)
+    print "Flipped: %s" % flipped.encode('hex')
+    d.RFxmit(flipped)
+
+if __name__ == '__main__':
+    main()
