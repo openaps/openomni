@@ -13,11 +13,31 @@ Documentation and python library for decoding omnipod communications.
 #### Current understanding of command bytes:
 
 * Status: 0e01
+* POD Status Response: 1d18
+* POD Status Response with Temp Basal Running: 1d28
 * Bolus: 1a0e
 * Temp Basal: 1a0e
 * Resume Basal Insulin: 1a1e
 * Basal Program: 1a1# 
 * Cancel Bolus: 1f05
+* 
+
+## Installation
+
+Prerequisites:
+* python 2.7
+* [pip](https://pip.readthedocs.io/en/stable/installing/)
+* [rfcat](https://bitbucket.org/atlas0fd00m/rfcat)
+* PyUSB - you can install this with pip: `pip install pyusb`, or `sudo pip install pyusb`
+* On mac, you'll need libusb. `brew install libusb`
+
+You can install openomni in editable mode like this:
+```
+git clone https://github.com/openaps/openomni.git
+cd openomni
+pip install -e .
+```
+** note: you may need to add 'sudo' before the pip install line if you are using a system python install
 
 =======
 ##### ** Please note the below is notes about a project created to better understand how the omnipod communicates **
