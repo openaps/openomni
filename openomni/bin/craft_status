@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 
 import argparse
+import openomni
 from openomni import Packet
 from rflib import *
 
@@ -10,9 +11,10 @@ def main(options=None):
     args = parser.parse_args()
 
     d = RfCat(0, debug=False)
+    openomni.configure_rfcat(d)
 
-    print "Sleeping for 5 seconds..."
-    time.sleep(5)
+    print "Sleeping for 1 second..."
+    time.sleep(1)
 
     # Start with seen packet:
     status_req = Packet("1f02d5afaa1f02d5af38030e01008195d3".decode('hex'))
@@ -27,7 +29,8 @@ def main(options=None):
     print "Sending %s" % tx_data.encode('hex')
     flipped = Packet.flip_bytes(tx_data)
     print "Flipped: %s" % flipped.encode('hex')
-    d.RFxmit(flipped)
+    d.RFxmit(flipped, repeat=10)
+    time.sleep(1)
 
 if __name__ == '__main__':
     main()
