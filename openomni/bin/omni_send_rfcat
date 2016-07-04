@@ -48,7 +48,7 @@ def craft_status(pod_id, seq, byte9, body):
     crc = hex(crc)[2:]
     return base + crc
 
-def quick_setup(device, pod_id, seq, byte9, body, json=False, bitrate=4062):
+def quick_setup(device, pod_id, seq, byte9, body, json=False, bitrate=40625):
 	"""quick_setup is used to setup rfcat to quickly decode omnipod signals"""
 	device.setFreq(433.91e6)
 	device.setMdmModulation(MOD_2FSK)
