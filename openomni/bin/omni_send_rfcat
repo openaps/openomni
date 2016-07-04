@@ -49,53 +49,53 @@ def craft_status(pod_id, seq, byte9, body):
     return base + crc
 
 def quick_setup(device, pod_id, seq, byte9, body, json=False, bitrate=40625):
-	"""quick_setup is used to setup rfcat to quickly decode omnipod signals"""
-	device.setFreq(433.91e6)
-	device.setMdmModulation(MOD_2FSK)
-	device.setPktPQT(1)
-	device.setMdmSyncMode(SYNCM_CARRIER_16_of_16)
-	device.setMdmSyncWord(0x54c3)
-	device.makePktFLEN(50)
-	device.setEnableMdmManchester(True)
-	device.setMdmDRate(bitrate)
-	device.setRFRegister(0xdf18, 0x70)
-        
-        send_count = 0
-        
-        while not keystop():
-		try:
-                        
-                        # Transmit 
-                        if send_count < 10: 
-                            crafted = craft_status(pod_id, seq, byte9, body)
-                            
-                            print "Crafted: " + crafted
-                            crafted = flip_bytes_format_send(crafted)
-                            print "Bytes Sent: " + crafted
-                            send_count += 1
-                            device.RFxmit(crafted)
-                        
-                        pkt,ts = device.RFrecv()
-                        pkt = flip_bytes(pkt)
-			rcv_time = datetime.datetime.now()
+    """quick_setup is used to setup rfcat to quickly decode omnipod signals"""
+    device.setFreq(433.91e6)
+    device.setMdmModulation(MOD_2FSK)
+    device.setPktPQT(1)
+    device.setMdmSyncMode(SYNCM_CARRIER_16_of_16)
+    device.setMdmSyncWord(0x54c3)
+    device.makePktFLEN(50)
+    device.setEnableMdmManchester(True)
+    device.setMdmDRate(bitrate)
+    device.setRFRegister(0xdf18, 0x70)
+    
+    send_count = 0
+    
+    while not keystop():
+        try:
+                
+            # Transmit 
+            if send_count < 10: 
+                crafted = craft_status(pod_id, seq, byte9, body)
+                
+                print "Crafted: " + crafted
+                crafted = flip_bytes_format_send(crafted)
+                print "Bytes Sent: " + crafted
+                send_count += 1
+                device.RFxmit(crafted)
+            
+            pkt,ts = device.RFrecv()
+            pkt = flip_bytes(pkt)
+            rcv_time = datetime.datetime.now()
 
-                        x = 0
-			while x < len(pkt):
-				packet = Packet(pkt[:len(pkt) - (x + 1)])
-				packet.received_at = rcv_time
-				if packet.is_valid():
-					#print packet.data.encode('hex')
-					if json:
-						print packet.as_json()
-					else:
-						print packet
-				x += 1
+            x = 0
+            while x < len(pkt):
+                packet = Packet(pkt[:len(pkt) - (x + 1)])
+                packet.received_at = rcv_time
+                if packet.is_valid():
+                    #print packet.data.encode('hex')
+                    if json:
+                        print packet.as_json()
+                    else:
+                        print packet
+                x += 1
 
-		except ChipconUsbTimeoutException:
-                    time.sleep(0.5)
+        except ChipconUsbTimeoutException:
+            time.sleep(0.5)
 
 
-	sys.stdin.read(1)
+    sys.stdin.read(1)
 
 
 def main(options=None):
@@ -115,4 +115,4 @@ def main(options=None):
     quick_setup(d, pod_id=args.pod_id, seq=args.seq, byte9=args.byte9, body=args.body, json=args.json)
 
 if __name__ == '__main__':
-	main()
+    main()
