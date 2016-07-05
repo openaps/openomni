@@ -15,13 +15,12 @@ class Packet:
         PACKET_TYPE_CON: "CON",
     }
 
-    def __init__(self, data):
+    def __init__(self, data = ""):
         self.received_at = None
         self.data = data
         if len(data) < 10:
             return
         self.body = None
-        self.length = format(len(data),'02')
         self.pod_address_1 = data[0:4].encode("hex")
         byte5 = ord(data[4])
 
