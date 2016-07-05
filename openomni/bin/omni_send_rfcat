@@ -60,7 +60,7 @@ def main(options=None):
 
     while not keystop():
     	try:
-    		pkt,ts = d.RFrecv(timeout=80000)
+    		pkt,ts = d.RFrecv()
     		pkt = Packet.flip_bytes(pkt)
     		rcv_time = datetime.datetime.now()
 
