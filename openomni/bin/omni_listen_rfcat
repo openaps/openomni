@@ -5,6 +5,7 @@ import binascii
 import time
 import datetime
 import argparse
+import openomni
 from openomni import Packet
 
 def flip_bytes(data):
@@ -12,22 +13,22 @@ def flip_bytes(data):
 	bytes = map(lambda x: ord(x) ^ 0xff, data)
 	return bytearray(bytes).__str__()
 
-def quick_setup(device, bitrate=40625, json=False):
-	"""quick_setup is used to setup rfcat to quickly decode omnipod signals"""
-	device.setFreq(433.91e6)
-	device.setMdmModulation(MOD_2FSK)
-	device.setPktPQT(1)
-	device.setMdmSyncMode(SYNCM_CARRIER_16_of_16)
-	device.setMdmSyncWord(0x54c3)
-	device.makePktFLEN(50)
-	device.setEnableMdmManchester(True)
-	device.setMdmDRate(bitrate)
-	device.setRFRegister(0xdf18, 0x70)
+def main(options=None):
+
+	parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
+	parser.add_argument('--json', action='store_true',
+		help='print as json (default: text line)')
+
+	args = parser.parse_args()
+
+	d = RfCat(0, debug=False)
+	openomni.configure_rfcat(d)
+	json = args.json
 
 	while not keystop():
 		try:
-			pkt,ts = device.RFrecv(timeout=80000)
-                        pkt = flip_bytes(pkt)
+			pkt,ts = d.RFrecv(timeout=80000)
+			pkt = Packet.flip_bytes(pkt)
 			rcv_time = datetime.datetime.now()
 
 			x = 0
@@ -47,17 +48,6 @@ def quick_setup(device, bitrate=40625, json=False):
 
 
 	sys.stdin.read(1)
-
-def main(options=None):
-
-    parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
-    parser.add_argument('--json', action='store_true',
-                        help='print as json (default: text line)')
-
-    args = parser.parse_args()
-
-    d = RfCat(0, debug=False)
-    quick_setup(d, json=args.json)
 
 if __name__ == '__main__':
 	main()

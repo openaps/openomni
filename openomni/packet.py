@@ -15,13 +15,12 @@ class Packet:
         PACKET_TYPE_CON: "CON",
     }
 
-    def __init__(self, data):
+    def __init__(self, data = ""):
         self.received_at = None
         self.data = data
         if len(data) < 10:
             return
         self.body = None
-        self.length = format(len(data),'02')
         self.pod_address_1 = data[0:4].encode("hex")
         byte5 = ord(data[4])
 
@@ -55,8 +54,19 @@ class Packet:
     @staticmethod
     def flip_bytes(data):
     	"""flip_bytes inverts bytes"""
-    	bytes = map(lambda x: ord(x) ^ 0xff, data.decode("hex"))
-    	return binascii.hexlify(bytearray(bytes))
+    	bytes = map(lambda x: ord(x) ^ 0xff, data)
+    	return bytearray(bytes).__str__()
+
+    def tx_data(self):
+        data = self.pod_address_1.decode('hex')
+        data += chr((self.packet_type << 5) + self.sequence)
+        data += self.pod_address_2.decode('hex')
+        data += chr(self.byte9)
+        data += chr(self.body_len)
+        data += self.message_type
+        data += self.body
+        data += chr(self.compute_crc_for(bytearray(data)))
+        return data
 
     def __str__(self):
         if not self.is_valid():
@@ -128,6 +138,8 @@ class Packet:
     def is_valid(self):
         return len(self.data) >= 10 and self.crc_ok()
 
+    def compute_crc_for(self, data):
+        return crccheck.crc.Crc8.calc(data)
+
     def crc_ok(self):
-        computed_crc = crccheck.crc.Crc8.calc(bytearray(self.data[:-1]))
-        return self.crc == computed_crc
+        return self.crc == self.compute_crc_for(bytearray(self.data[:-1]))

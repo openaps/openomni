@@ -1,84 +1,40 @@
 #!/usr/bin/env python2
 
 from rflib import *
-import binascii
-import time
-import datetime
 import argparse
+import openomni
 from openomni import Packet
-import crccheck
+import datetime
 
-def flip_bytes(data):
-    """flip_bytes inverts bytes"""
-    bytes = map(lambda x: ord(x) ^ 0xff, data)
-    return bytearray(bytes).__str__()
+def send_packet(device, pod_id, seq, byte9_hex, message_type_hex, body_hex):
 
-def craft_seq(seq):
-    """Craft a sequence byte that impersonates the PDM"""
-    pdm = '101'
-    bin_str = pdm + format(seq,'#07b')[2:]
-    int_str = int(bin_str,2)
-    return hex(int_str)
+    body = body_hex.decode('hex')
 
-def gen_crc(packet_base):
-    """Generate an 8-bit CRC based on packet data"""
-    computed_crc = crccheck.crc.Crc8.calc(bytearray(packet_base.decode('hex')))
-    return computed_crc
+    packet = Packet()
+    packet.pod_address_1 = pod_id
+    packet.packet_type = Packet.PACKET_TYPE_PDM
+    packet.sequence = int(seq)
+    packet.pod_address_2 = pod_id
+    packet.byte9 = ord(byte9_hex.decode('hex'))
+    packet.body = body
+    packet.body_len = len(body)
+    packet.message_type = message_type_hex.decode('hex')
 
-def craft_status(pod_id, seq, byte9, body):
-    """Send_status is to send a status packet from POD to PDM"""
-    base = pod_id + str(craft_seq(seq))[2:] + pod_id + str(byte9) + '03' + '0e01' + body
-    crc = gen_crc(base)
-    crc = hex(crc)[2:]
-    return base + crc
+    # Prepend preamble bytes
+    preamble_length = 235 #324 is full amount, but rfcat errors if total length is > 255
+    sync_word = "3c"
+    packet_prefix = (("ab" * preamble_length) + sync_word).decode('hex')
+    full_data = packet_prefix + packet.tx_data()
+    print "Sending %s" % full_data.encode('hex')
 
-def quick_setup(device, pod_id, seq, byte9, body, json=False, bitrate=40625):
-    """quick_setup is used to setup rfcat to quickly decode omnipod signals"""
-    device.setFreq(433.91e6)
-    device.setMdmModulation(MOD_2FSK)
-    device.setPktPQT(1)
-    device.setMdmSyncMode(SYNCM_CARRIER_16_of_16)
-    device.setMdmSyncWord(0x54c3)
-    device.makePktFLEN(50)
-    device.setEnableMdmManchester(True)
-    device.setMdmDRate(bitrate)
-    device.setRFRegister(0xdf18, 0x70)
-    
-    send_count = 0
-    
-    while not keystop():
-        try:
-                
-            # Transmit 
-            if send_count < 6: 
-                crafted = craft_status(pod_id, seq, byte9, body)
-                
-                print "Crafted: " + crafted
-                crafted = flip_bytes(crafted)
-                print "Bytes Sent: " + crafted
-                send_count += 1
-                device.RFxmit(crafted)
-            
-            pkt,ts = device.RFrecv()
-            pkt = flip_bytes(pkt)
-            rcv_time = datetime.datetime.now()
+    # Turn off modem preamble and syncword since we are doing our own
+    openomni.disable_preamble(device)
 
-            x = 0
-            while x < len(pkt):
-                packet = Packet(pkt[:len(pkt) - (x + 1)])
-                packet.received_at = rcv_time
-                if packet.is_valid():
-                    #print packet.data.encode('hex')
-                    if json:
-                        print packet.as_json()
-                    else:
-                        print packet
-                x += 1
+    # Send data
+    device.RFxmit(Packet.flip_bytes(full_data))
 
-        except ChipconUsbTimeoutException:
-            time.sleep(0.5)
-
-    sys.stdin.read(1)
+    # Restore modem preamble and syncword
+    openomni.enable_preamble(device)
 
 
 def main(options=None):
@@ -87,15 +43,44 @@ def main(options=None):
     parser.add_argument('--json', action='store_true',
                         help='print as json (default: text line)')
 
-    parser.add_argument('pod_id', help='the pod id')
+    parser.add_argument('pod_id', help='the pod id', type=str)
     parser.add_argument('seq', help='sequence number of the packet you wish to craft', type=int)
-    parser.add_argument('byte9', help='byte9 value of the packet you wish to craft')
-    parser.add_argument('body', help='body bytes that you are seeing for given byte9', type=str)
+    parser.add_argument('byte9', help='byte9 value in hexadecimal', type=str)
+    parser.add_argument('message_type', help='message_type value in hexadecimal', type=str)
+    parser.add_argument('body', help='body of packet in hexadecimal', type=str)
 
     args = parser.parse_args()
 
     d = RfCat(0, debug=False)
-    quick_setup(d, pod_id=args.pod_id, seq=args.seq, byte9=args.byte9, body=args.body, json=args.json)
+    openomni.configure_rfcat(d)
+
+    send_packet(d, pod_id=args.pod_id, seq=args.seq, byte9_hex=args.byte9, message_type_hex=args.message_type, body_hex=args.body)
+
+    json = args.json
+
+    while not keystop():
+    	try:
+    		pkt,ts = d.RFrecv(timeout=80000)
+    		pkt = Packet.flip_bytes(pkt)
+    		rcv_time = datetime.datetime.now()
+
+    		x = 0
+    		while x < len(pkt):
+    			packet = Packet(pkt[:len(pkt) - (x + 1)])
+    			packet.received_at = rcv_time
+    			if packet.is_valid():
+    				#print packet.data.encode('hex')
+    				if json:
+    					print packet.as_json()
+    				else:
+    					print packet
+    			x += 1
+
+    	except ChipconUsbTimeoutException:
+    		time.sleep(0.5)
+
+    sys.stdin.read(1)
+
 
 if __name__ == '__main__':
     main()
