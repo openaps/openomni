@@ -13,22 +13,6 @@ def flip_bytes(data):
     bytes = map(lambda x: ord(x) ^ 0xff, data)
     return bytearray(bytes).__str__()
 
-def flip_bytes_format_send(data):
-    """Flips bytes and outputs hex string appropriate for RFxmit""" 
-    hex_str = "" 
-    for k,v in enumerate(data): 
-        if (k % 2) == 0 and k < len(data) - 1: 
-            byte = v + data[k+1] 
-            byte_bin = bin(int(byte, 16))[2:].zfill(8) 
-            inverted = "" 
-            for k,v in enumerate(byte_bin): 
-                if v == '0': 
-                    inverted += '1' 
-                else: 
-                    inverted += '0' 
-            hex_str += "\\x" + "{0:02x}".format(int(inverted,2)) 
-    return hex_str
-
 def craft_seq(seq):
     """Craft a sequence byte that impersonates the PDM"""
     pdm = '101'
@@ -66,11 +50,11 @@ def quick_setup(device, pod_id, seq, byte9, body, json=False, bitrate=40625):
         try:
                 
             # Transmit 
-            if send_count < 10: 
+            if send_count < 6: 
                 crafted = craft_status(pod_id, seq, byte9, body)
                 
                 print "Crafted: " + crafted
-                crafted = flip_bytes_format_send(crafted)
+                crafted = flip_bytes(crafted)
                 print "Bytes Sent: " + crafted
                 send_count += 1
                 device.RFxmit(crafted)
@@ -93,7 +77,6 @@ def quick_setup(device, pod_id, seq, byte9, body, json=False, bitrate=40625):
 
         except ChipconUsbTimeoutException:
             time.sleep(0.5)
-
 
     sys.stdin.read(1)
 
