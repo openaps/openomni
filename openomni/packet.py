@@ -39,7 +39,7 @@ class Packet:
             self.body = data[13:-1]
         else:
             self.byte9 = None
-            self.body_len = None
+            self.body_len = 0
             self.message_type = None
             self.body = None
 
@@ -136,7 +136,13 @@ class Packet:
         return json.dumps(obj, sort_keys=True,indent=4, separators=(',', ': '))
 
     def is_valid(self):
-        return len(self.data) >= 10 and self.crc_ok()
+        if self.data == None:
+            return False
+        if len(self.data) < 10:
+            return False
+        big_body_ok = self.body_len > 23 and len(self.body) == 23
+        small_body_ok = self.body_len == 0 or self.body_len == len(self.body)
+        return self.crc_ok() and (big_body_ok or small_body_ok)
 
     def compute_crc_for(self, data):
         return crccheck.crc.Crc8.calc(data)
