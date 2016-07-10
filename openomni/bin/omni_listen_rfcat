@@ -9,45 +9,49 @@ import openomni
 from openomni import Packet
 
 def flip_bytes(data):
-	"""flip_bytes inverts bytes"""
-	bytes = map(lambda x: ord(x) ^ 0xff, data)
-	return bytearray(bytes).__str__()
+    """flip_bytes inverts bytes"""
+    bytes = map(lambda x: ord(x) ^ 0xff, data)
+    return bytearray(bytes).__str__()
 
 def main(options=None):
 
-	parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
-	parser.add_argument('--json', action='store_true',
-		help='print as json (default: text line)')
+    parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
+    parser.add_argument('--json', action='store_true',
+        help='print as json (default: text line)')
 
-	args = parser.parse_args()
+    parser.add_argument('--raw', action='store_true',
+        help='print raw packet')
 
-	d = RfCat(0, debug=False)
-	openomni.configure_rfcat(d)
-	json = args.json
+    args = parser.parse_args()
 
-	while not keystop():
-		try:
-			pkt,ts = d.RFrecv(timeout=80000)
-			pkt = Packet.flip_bytes(pkt)
-			rcv_time = datetime.datetime.now()
+    d = RfCat(0, debug=False)
+    openomni.configure_rfcat(d)
+    json = args.json
 
-			x = 0
-			while x < len(pkt):
-				packet = Packet(pkt[:len(pkt) - (x + 1)])
-				packet.received_at = rcv_time
-				if packet.is_valid():
-					#print packet.data.encode('hex')
-					if json:
-						print packet.as_json()
-					else:
-						print packet
-				x += 1
+    while not keystop():
+        try:
+            pkt,ts = d.RFrecv(timeout=80000)
+            pkt = Packet.flip_bytes(pkt)
+            rcv_time = datetime.datetime.now()
 
-		except ChipconUsbTimeoutException:
-			time.sleep(0.5)
+            x = 0
+            while x < len(pkt):
+                packet = Packet(pkt[:len(pkt) - (x + 1)])
+                packet.received_at = rcv_time
+                if packet.is_valid():
+                    if args.raw:
+                        print packet.data.encode('hex')
+                    if json:
+                        print packet.as_json()
+                    else:
+                        print packet
+                x += 1
+
+        except ChipconUsbTimeoutException:
+            time.sleep(0.5)
 
 
-	sys.stdin.read(1)
+    sys.stdin.read(1)
 
 if __name__ == '__main__':
-	main()
+    main()
