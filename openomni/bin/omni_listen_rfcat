@@ -9,8 +9,8 @@ from rflib import RfCat, keystop, ChipconUsbTimeoutException
 import time
 import datetime
 import argparse
-import openomni
-from openomni import Packet
+import openomni.rf
+from openomni.packet import Packet
 import sys
 
 
@@ -32,7 +32,7 @@ def main(options=None):
     args = parser.parse_args()
 
     d = RfCat(0, debug=False)
-    openomni.configure_rfcat(d)
+    openomni.rf.configure_rfcat(d)
     json = args.json
 
     while not keystop():

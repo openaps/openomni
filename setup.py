@@ -18,7 +18,12 @@ setup(name='openomni',
       # contributors...
       author='Pete Schwamb',
       author_email='pete@schwamb.net',
-      scripts=['openomni/bin/decode_omni', 'openomni/bin/omni_listen_rfcat'],
+      scripts=[
+        'openomni/bin/decode_omni',
+        'openomni/bin/omni_listen_rfcat',
+        'openomni/bin/omni_akimbo',
+        'openomni/bin/omni_explore',
+        'openomni/bin/omni_send_rfcat'],
       packages=find_packages(),
       install_requires=[
           'crccheck',

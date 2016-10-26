@@ -7,8 +7,8 @@ from __future__ import absolute_import
 
 from rflib import RfCat, keystop, ChipconUsbTimeoutException
 import argparse
-import openomni
-from openomni import Packet
+import openomni.rf
+from openomni.packet import Packet
 import datetime
 import time
 import sys
@@ -36,13 +36,13 @@ def send_packet(device, pod_id, seq, byte9_hex, message_type_hex, body_hex):
     print("Sending %s" % full_data.encode('hex'))
 
     # Turn off modem preamble and syncword since we are doing our own
-    openomni.disable_preamble(device)
+    openomni.rf.disable_preamble(device)
 
     # Send data
     device.RFxmit(Packet.flip_bytes(full_data))
 
     # Restore modem preamble and syncword
-    openomni.enable_preamble(device)
+    openomni.rf.enable_preamble(device)
 
 
 def main(options=None):
@@ -60,7 +60,7 @@ def main(options=None):
     args = parser.parse_args()
 
     d = RfCat(0, debug=False)
-    openomni.configure_rfcat(d)
+    openomni.rf.configure_rfcat(d)
 
     send_packet(d, pod_id=args.pod_id, seq=args.seq, byte9_hex=args.byte9,
                 message_type_hex=args.message_type, body_hex=args.body)

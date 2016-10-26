@@ -7,7 +7,7 @@ import json
 import crccheck
 
 
-class Packet:
+class Packet(object):
 
     PACKET_TYPE_PDM = 0b101
     PACKET_TYPE_POD = 0b111
@@ -73,6 +73,36 @@ class Packet:
         data += self.body
         data += chr(self.compute_crc_for(bytearray(data)))
         return data
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        if self.pod_address_1 != other.pod_address_1:
+            return False
+        if self.pod_address_2 != other.pod_address_2:
+            return False
+        if self.packet_type != other.packet_type:
+            return False
+        if self.message_type != other.message_type:
+            return False
+        if self.body != other.body:
+            return False
+        if self.byte9 != other.byte9:
+            return False
+        if self.sequence != other.sequence:
+            return False
+        # that'll do, pig
+        return True
+
+    def __hash__(self):
+        return sum([
+            hash(self.pod_address_1),
+            hash(self.pod_address_2),
+            hash(self.packet_type),
+            hash(self.message_type),
+            hash(self.body),
+            hash(self.byte9),
+            hash(self.sequence)])
 
     def __str__(self):
         if not self.is_valid():
