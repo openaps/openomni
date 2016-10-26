@@ -1,8 +1,7 @@
 from setuptools import setup, find_packages
-import os
 
 import re
-VERSIONFILE="openomni/_version.py"
+VERSIONFILE = "openomni/_version.py"
 verstrline = open(VERSIONFILE, "rt").read()
 VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
 mo = re.search(VSRE, verstrline, re.M)

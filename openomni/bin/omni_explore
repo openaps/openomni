@@ -1,59 +1,73 @@
-#! /usr/bin/python2 
- 
-""" Omnipod RFCat Explorer""" 
-""" Used to explore preambles, syncwords, and packets without strict parsing."""  
- 
-from rflib import * 
-import binascii 
-import time 
-import crccheck 
-import argparse 
- 
-def packet_valid(p): 
-    """packet_valid is a basic sanity check""" 
-    if ord(p[0]) == 0xe0: 
-            return True 
-    return False 
- 
-def flip_bytes(data): 
-    """flip_bytes inverts bytes""" 
-    bytes = map(lambda x: ord(x) ^ 0xff, data.decode("hex")) 
-    return binascii.hexlify(bytearray(bytes)) 
- 
-def quick_setup(device, bitrate, flood): 
-    """quick_setup is used to setup rfcat to quickly decode omnipod signals""" 
-    device.setFreq(433.91e6) 
-    device.setMdmModulation(MOD_2FSK) 
- 
-    if flood == True: 
-        device.setPktPQT(0) 
-        device.setMdmSyncMode(0) 
-    else: 
-        device.setPktPQT(1) 
-        device.setMdmSyncMode(SYNCM_CARRIER_16_of_16) 
-        device.setMdmSyncWord(0x54c3) 
- 
-    device.makePktFLEN(80) 
-    device.setEnableMdmManchester(True) 
-    device.setMdmDRate(bitrate) 
-    device.setRFRegister(0xdf18, 0x70) 
- 
-    while not keystop(): 
-        try: 
-            pkt,ts = device.RFrecv() 
-            print "Received: %s" % flip_bytes(pkt.encode('hex')) 
- 
-        except ChipconUsbTimeoutException: 
+#! /usr/bin/python2
+
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
+from rflib import (
+    RfCat,
+    keystop,
+    MOD_2FSK,
+    SYNCM_CARRIER_16_of_16,
+    ChipconUsbTimeoutException
+)
+import binascii
+import time
+import argparse
+import sys
+
+""" Omnipod RFCat Explorer"""
+""" Used to explore preambles, syncwords, and packets without strict parsing."""
+
+
+def packet_valid(p):
+    """packet_valid is a basic sanity check"""
+    if ord(p[0]) == 0xe0:
+            return True
+    return False
+
+
+def flip_bytes(data):
+    """flip_bytes inverts bytes"""
+    bytes = map(lambda x: ord(x) ^ 0xff, data.decode("hex"))
+    return binascii.hexlify(bytearray(bytes))
+
+
+def quick_setup(device, bitrate, flood):
+    """quick_setup is used to setup rfcat to quickly decode omnipod signals"""
+    device.setFreq(433.91e6)
+    device.setMdmModulation(MOD_2FSK)
+
+    if flood:
+        device.setPktPQT(0)
+        device.setMdmSyncMode(0)
+    else:
+        device.setPktPQT(1)
+        device.setMdmSyncMode(SYNCM_CARRIER_16_of_16)
+        device.setMdmSyncWord(0x54c3)
+
+    device.makePktFLEN(80)
+    device.setEnableMdmManchester(True)
+    device.setMdmDRate(bitrate)
+    device.setRFRegister(0xdf18, 0x70)
+
+    while not keystop():
+        try:
+            pkt, ts = device.RFrecv()
+            print("Received: %s" % flip_bytes(pkt.encode('hex')))
+
+        except ChipconUsbTimeoutException:
             time.sleep(0.5)
-                     
-    sys.stdin.read(1) 
- 
-if __name__ == '__main__': 
-    parser = argparse.ArgumentParser(description="Explore omni communications with rfcat...") 
-    parser.add_argument('--bitrate', '-b', help="Bitrate in kbps", dest='bitrate', type=int) 
-    parser.add_argument('--flood', '-f', help="Disable preamble quality threshold and sync word", dest='flood', action='store_true') 
-    parser.set_defaults(bitrate=40625) 
-    parser.set_defaults(flood=False) 
-    args = parser.parse_args() 
-    d = RfCat(0, debug=False) 
+
+    sys.stdin.read(1)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Explore omni communications with rfcat...")
+    parser.add_argument('--bitrate', '-b', help="Bitrate in kbps", dest='bitrate', type=int)
+    parser.add_argument('--flood', '-f', help="Disable preamble quality threshold and sync word", dest='flood', action='store_true')
+    parser.set_defaults(bitrate=40625)
+    parser.set_defaults(flood=False)
+    args = parser.parse_args()
+    d = RfCat(0, debug=False)
     quick_setup(d, args.bitrate, args.flood)

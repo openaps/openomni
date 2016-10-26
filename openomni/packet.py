@@ -1,5 +1,11 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
 import json
 import crccheck
+
 
 class Packet:
 
@@ -15,7 +21,7 @@ class Packet:
         PACKET_TYPE_CON: "CON",
     }
 
-    def __init__(self, data = ""):
+    def __init__(self, data=""):
         self.received_at = None
         self.data = data
         if len(data) < 10:
@@ -53,9 +59,9 @@ class Packet:
 
     @staticmethod
     def flip_bytes(data):
-    	"""flip_bytes inverts bytes"""
-    	bytes = map(lambda x: ord(x) ^ 0xff, data)
-    	return bytearray(bytes).__str__()
+        """flip_bytes inverts bytes"""
+        bytes = map(lambda x: ord(x) ^ 0xff, data)
+        return bytearray(bytes).__str__()
 
     def tx_data(self):
         data = self.pod_address_1.decode('hex')
@@ -133,10 +139,10 @@ class Packet:
             obj["message_type"] = self.message_type.encode('hex')
         if self.received_at is not None:
             obj["received_at"] = self.received_at.isoformat()
-        return json.dumps(obj, sort_keys=True,indent=4, separators=(',', ': '))
+        return json.dumps(obj, sort_keys=True, indent=4, separators=(',', ': '))
 
     def is_valid(self):
-        if self.data == None:
+        if self.data is None:
             return False
         if len(self.data) < 10:
             return False
