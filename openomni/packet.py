@@ -72,7 +72,7 @@ class Packet(object):
             self.body = None
 
         if self.packet_type == Packet.PACKET_TYPE_CON:
-            self.body_continuation = data[5:-1]
+            self.body = data[5:-1]
         self.crc = ord(data[-1])
 
     @staticmethod
@@ -107,7 +107,7 @@ class Packet(object):
                 if key == "CRC":
                     self.crc = int(v,16)
                 if key == "CON":
-                    self.body_continuation = v.decode('hex')
+                    self.body = v.decode('hex')
                 if key == "B9":
                     self.byte9 = int(v,16)
                 if key == "BLEN":
@@ -128,7 +128,7 @@ class Packet(object):
         data = self.pod_address_1.decode('hex')
         data += chr((self.packet_type << 5) + self.sequence)
         if self.packet_type == self.PACKET_TYPE_CON:
-            data += self.body_continuation
+            data += self.body
         else:
             data += self.pod_address_2.decode('hex')
         if self.packet_type != self.PACKET_TYPE_CON and self.body is not None:
@@ -193,7 +193,7 @@ class Packet(object):
         if self.packet_type == Packet.PACKET_TYPE_CON:
             return "%s CON:%s CRC:%02x" % (
                 base_str,
-                self.body_continuation.encode('hex'),
+                self.body.encode('hex'),
                 self.crc,
             )
         if self.body != None:
@@ -249,7 +249,7 @@ class Packet(object):
         if self.packet_type is None:
             return False
         if self.packet_type == self.PACKET_TYPE_CON:
-            body_ok = len(self.body_continuation) >= 1
+            body_ok = len(self.body) >= 1
         elif self.packet_type == self.PACKET_TYPE_ACK:
             body_ok = True
         else:
