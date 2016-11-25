@@ -1,3 +1,8 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
 import json
 import crccheck
 import dateutil.parser
@@ -14,7 +19,8 @@ def json_serial(obj):
     raise TypeError ("Type not serializable")
 
 
-class Packet:
+
+class Packet(object):
 
     PACKET_TYPE_PDM = 0b101
     PACKET_TYPE_POD = 0b111
@@ -31,7 +37,7 @@ class Packet:
     }
     PACKET_TYPES = dict(map(lambda x: [x[1],x[0]],PACKET_TYPE_STRINGS.items()))
 
-    def __init__(self, data = ""):
+    def __init__(self, data=""):
         self.received_at = None
         self.packet_type = None
         self.body = None
@@ -72,9 +78,9 @@ class Packet:
 
     @staticmethod
     def flip_bytes(data):
-    	"""flip_bytes inverts bytes"""
-    	bytes = map(lambda x: ord(x) ^ 0xff, data)
-    	return bytearray(bytes).__str__()
+        """flip_bytes inverts bytes"""
+        bytes = map(lambda x: ord(x) ^ 0xff, data)
+        return bytearray(bytes).__str__()
 
     def assign_from_string(self, line):
         try:
@@ -130,6 +136,36 @@ class Packet:
             data += self.body
         data += chr(self.compute_crc_for(bytearray(data)))
         return data
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        if self.pod_address_1 != other.pod_address_1:
+            return False
+        if self.pod_address_2 != other.pod_address_2:
+            return False
+        if self.packet_type != other.packet_type:
+            return False
+        if self.message_type != other.message_type:
+            return False
+        if self.body != other.body:
+            return False
+        if self.byte9 != other.byte9:
+            return False
+        if self.sequence != other.sequence:
+            return False
+        # that'll do, pig
+        return True
+
+    def __hash__(self):
+        return sum([
+            hash(self.pod_address_1),
+            hash(self.pod_address_2),
+            hash(self.packet_type),
+            hash(self.message_type),
+            hash(self.body),
+            hash(self.byte9),
+            hash(self.sequence)])
 
     def __str__(self):
         if not self.is_valid():

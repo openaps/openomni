@@ -1,10 +1,18 @@
 #!/usr/bin/env python2
 
-from rflib import *
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
+from rflib import RfCat, keystop, ChipconUsbTimeoutException
 import argparse
-import openomni
-from openomni import Packet
+import openomni.rf
+from openomni.packet import Packet
 import datetime
+import time
+import sys
+
 
 def send_packet(device, pod_id, seq, byte9_hex, message_type_hex, body_hex):
 
@@ -21,20 +29,20 @@ def send_packet(device, pod_id, seq, byte9_hex, message_type_hex, body_hex):
     packet.message_type = message_type_hex.decode('hex')
 
     # Prepend preamble bytes
-    preamble_length = 235 #324 is full amount, but rfcat errors if total length is > 255
+    preamble_length = 235   # 324 is full amount, but rfcat errors if total length is > 255
     sync_word = "3c"
     packet_prefix = (("ab" * preamble_length) + sync_word).decode('hex')
     full_data = packet_prefix + packet.tx_data()
-    print "Sending %s" % full_data.encode('hex')
+    print("Sending %s" % full_data.encode('hex'))
 
     # Turn off modem preamble and syncword since we are doing our own
-    openomni.disable_preamble(device)
+    openomni.rf.disable_preamble(device)
 
     # Send data
     device.RFxmit(Packet.flip_bytes(full_data))
 
     # Restore modem preamble and syncword
-    openomni.enable_preamble(device)
+    openomni.rf.enable_preamble(device)
 
 
 def main(options=None):
@@ -52,32 +60,33 @@ def main(options=None):
     args = parser.parse_args()
 
     d = RfCat(0, debug=False)
-    openomni.configure_rfcat(d)
+    openomni.rf.configure_rfcat(d)
 
-    send_packet(d, pod_id=args.pod_id, seq=args.seq, byte9_hex=args.byte9, message_type_hex=args.message_type, body_hex=args.body)
+    send_packet(d, pod_id=args.pod_id, seq=args.seq, byte9_hex=args.byte9,
+                message_type_hex=args.message_type, body_hex=args.body)
 
     json = args.json
 
     while not keystop():
-    	try:
-    		pkt,ts = d.RFrecv()
-    		pkt = Packet.flip_bytes(pkt)
-    		rcv_time = datetime.datetime.now()
+        try:
+            pkt, ts = d.RFrecv()
+            pkt = Packet.flip_bytes(pkt)
+            rcv_time = datetime.datetime.now()
 
-    		x = 0
-    		while x < len(pkt):
-    			packet = Packet(pkt[:len(pkt) - (x + 1)])
-    			packet.received_at = rcv_time
-    			if packet.is_valid():
-    				#print packet.data.encode('hex')
-    				if json:
-    					print packet.as_json()
-    				else:
-    					print packet
-    			x += 1
+            x = 0
+            while x < len(pkt):
+                packet = Packet(pkt[:len(pkt) - (x + 1)])
+                packet.received_at = rcv_time
+                if packet.is_valid():
+                    # print packet.data.encode('hex')
+                    if json:
+                        print(packet.as_json())
+                    else:
+                        print(packet)
+                x += 1
 
-    	except ChipconUsbTimeoutException:
-    		time.sleep(0.5)
+        except ChipconUsbTimeoutException:
+            time.sleep(0.5)
 
     sys.stdin.read(1)
 

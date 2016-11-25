@@ -1,8 +1,13 @@
 #!/usr/bin/env python2
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
 
 import argparse
-import binascii
-from openomni import Packet
+from openomni.packet import Packet
+
 
 def main(options=None):
     parser = argparse.ArgumentParser(description='Print out structured version of packet (given as a hex string).')
@@ -14,15 +19,14 @@ def main(options=None):
     args = parser.parse_args()
     packet = Packet.from_hex(args.data[0])
 
-
     if packet.is_valid():
         if args.json:
-            print packet.as_json()
+            print(packet.as_json())
         else:
             # compact style:
-            print packet
+            print(packet)
     else:
-      print "Invalid packet"
+        print("Invalid packet")
 
 if __name__ == '__main__':
     main()

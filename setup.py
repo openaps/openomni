@@ -1,8 +1,7 @@
 from setuptools import setup, find_packages
-import os
 
 import re
-VERSIONFILE="openomni/_version.py"
+VERSIONFILE = "openomni/_version.py"
 verstrline = open(VERSIONFILE, "rt").read()
 VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
 mo = re.search(VSRE, verstrline, re.M)
@@ -19,7 +18,13 @@ setup(name='openomni',
       # contributors...
       author='Pete Schwamb',
       author_email='pete@schwamb.net',
-      scripts=['openomni/bin/decode_omni', 'openomni/bin/omni_listen_rfcat'],
+      scripts=[
+        'openomni/bin/decode_omni',
+        'openomni/bin/omni_listen_rfcat',
+        'openomni/bin/omni_akimbo',
+        'openomni/bin/omni_explore',
+        'openomni/bin/omni_send_rfcat',
+        'openomni/bin/omni_forloop'],
       packages=find_packages(),
       install_requires=[
           'crccheck',
