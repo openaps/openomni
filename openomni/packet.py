@@ -21,6 +21,8 @@ class Packet:
     PACKET_TYPE_ACK = 0b010
     PACKET_TYPE_CON = 0b100
 
+    MAX_BODY_SEGMENT_LEN = 23
+
     PACKET_TYPE_STRINGS = {
         PACKET_TYPE_PDM: "PDM",
         PACKET_TYPE_POD: "POD",
@@ -53,7 +55,7 @@ class Packet:
             self.byte9 = ord(data[9])
             self.body_len = ord(data[10])
             self.message_type = data[11:13]
-            self.body = data[13:(13+min(23,self.body_len))]
+            self.body = data[13:(13+min(Packet.MAX_BODY_SEGMENT_LEN,self.body_len))]
         else:
             self.byte9 = None
             self.body_len = 0
@@ -100,7 +102,9 @@ class Packet:
                 if key == "B9":
                     self.byte9 = int(v,16)
                 if key == "BLEN":
-                    self.body_len = int(v,16)
+                    self.body_len = int(v)
+                    if self.body_len > 255:
+                        print "error: v = '%s' %s" % (v, line)
                 if key == "MTYPE":
                     self.message_type = v.decode('hex')
                 if key == "BODY":
@@ -213,7 +217,7 @@ class Packet:
         else:
             if self.body is None:
                 return False
-            big_body_ok = self.body_len > 23 and len(self.body) == 23
+            big_body_ok = self.body_len > Packet.MAX_BODY_SEGMENT_LEN and len(self.body) == Packet.MAX_BODY_SEGMENT_LEN
             small_body_ok = self.body_len == 0 or self.body_len == len(self.body)
             body_ok = (big_body_ok or small_body_ok)
         return self.crc_ok() and body_ok
