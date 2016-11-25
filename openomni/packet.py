@@ -109,8 +109,6 @@ class Packet(object):
                     self.byte9 = int(v,16)
                 if key == "BLEN":
                     self.body_len = int(v)
-                    if self.body_len > 255:
-                        print "error: v = '%s' %s" % (v, line)
                 if key == "MTYPE":
                     self.message_type = v.decode('hex')
                 if key == "BODY":

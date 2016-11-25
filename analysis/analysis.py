@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import dateutil
-from openomni import Packet
+from openomni.packet import Packet
 
 # Takes an array of bits, like [0,1,0,0,1,0,0,0,0,1,0,0],
 # And returns a hex string: '4840'
