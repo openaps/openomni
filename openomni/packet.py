@@ -56,8 +56,11 @@ class Packet(object):
             self.packet_type_str = format(self.packet_type, '#05b')[2:]
 
         self.sequence = byte5 & 0b11111
-        if len(data) > 13 and self.packet_type != Packet.PACKET_TYPE_ACK:
+
+        if self.packet_type != Packet.PACKET_TYPE_CON:
             self.pod_address_2 = data[5:9].encode("hex")
+
+        if len(data) > 13:
             self.byte9 = ord(data[9])
             self.body_len = ord(data[10])
             self.message_type = data[11:13]
@@ -126,8 +129,9 @@ class Packet(object):
         data += chr((self.packet_type << 5) + self.sequence)
         if self.packet_type == self.PACKET_TYPE_CON:
             data += self.body_continuation
-        elif self.body is not None:
+        else:
             data += self.pod_address_2.decode('hex')
+        if self.packet_type != self.PACKET_TYPE_CON and self.body is not None:
             data += chr(self.byte9)
             data += chr(self.body_len)
             data += self.message_type
