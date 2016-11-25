@@ -1,36 +1,43 @@
 #!/usr/bin/env python2
 
-from rflib import *
-import binascii
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
+from rflib import RfCat, keystop, ChipconUsbTimeoutException
 import time
 import datetime
 import argparse
-import openomni
-from openomni import Packet
+import openomni.rf
+from openomni.packet import Packet
+import sys
+
 
 def flip_bytes(data):
     """flip_bytes inverts bytes"""
     bytes = map(lambda x: ord(x) ^ 0xff, data)
     return bytearray(bytes).__str__()
 
+
 def main(options=None):
 
     parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
     parser.add_argument('--json', action='store_true',
-        help='print as json (default: text line)')
+                        help='print as json (default: text line)')
 
     parser.add_argument('--raw', action='store_true',
-        help='print raw packet')
+                        help='print raw packet')
 
     args = parser.parse_args()
 
     d = RfCat(0, debug=False)
-    openomni.configure_rfcat(d)
+    openomni.rf.configure_rfcat(d)
     json = args.json
 
     while not keystop():
         try:
-            pkt,ts = d.RFrecv(timeout=80000)
+            pkt, ts = d.RFrecv(timeout=80000)
             pkt = Packet.flip_bytes(pkt)
             rcv_time = datetime.datetime.now()
 
@@ -40,16 +47,15 @@ def main(options=None):
                 packet.received_at = rcv_time
                 if packet.is_valid():
                     if args.raw:
-                        print packet.data.encode('hex')
+                        print(packet.data.encode('hex'))
                     if json:
-                        print packet.as_json()
+                        print(packet.as_json())
                     else:
-                        print packet
+                        print(packet)
                 x += 1
 
         except ChipconUsbTimeoutException:
             time.sleep(0.5)
-
 
     sys.stdin.read(1)
 
