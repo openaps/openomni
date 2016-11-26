@@ -43,9 +43,11 @@ def main(options=None):
 
             x = 0
             while x < len(pkt):
-                packet = Packet(pkt[:len(pkt) - (x + 1)])
+                data = pkt[:len(pkt) - (x + 1)]
+                packet = Packet(data)
                 packet.received_at = rcv_time
                 if packet.is_valid():
+                    #print(data.encode('hex'))
                     if args.raw:
                         print(packet.data.encode('hex'))
                     if json:
