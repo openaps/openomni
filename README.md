@@ -1,26 +1,22 @@
 # OpenOmni
 Documentation and python library for decoding omnipod communications. [Join the Slack channel](https://omniapsslack.azurewebsites.net/) to discuss this work.
 
+#### Status:
 
-#### Current understanding of signal:
+We have figured out the RF modulation. See the [RF Modulation wiki page](https://github.com/openaps/openomni/wiki/RF-Modulation) for more details and tools.  We are working on trying to figure out a [CRC-like hash](https://github.com/openaps/openomni/wiki/Message-Body-Checksum) that is appended to each message, as well as decoding meaning of the bytes for each of the [Commands](https://github.com/openaps/openomni/wiki/Protocol-Commands)
 
-* 433.923MHz center signal
-* [2-FSK](https://en.wikipedia.org/wiki/Frequency-shift_keying), with 26.37kHz deviation
-* 40625bps data rate (before manchester)
-* [Manchester](https://en.wikipedia.org/wiki/Manchester_code) coded, non-ieee
-* 8-bit crc
+## Areas to focus on
 
-#### Current understanding of command bytes:
+There are two ways we could use help, beyond trying to crack the two byte crc at the end of messages (though if you want to tackle that, please do!):
+1) capture data from different pods and commands using omni_listen_rfcat. If you can document what was being done with the PDM while the packets were recorded, that would be a plus, but raw data can be helpful too.  Submit these as gists or post them to #shared-files in the Slack channel.
+2) Start decoding fields for individual commands.  Even without knowing how to generate the CRC, the raw data for commands and responses is clear, so it is possible to start decoding which bytes mean what.  A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
 
-* Status: 0e01
-* POD Status Response: 1d18
-* POD Status Response with Temp Basal Running: 1d28
-* Bolus: 1a0e
-* Temp Basal: 1a0e
-* Resume Basal Insulin: 1a1e
-* Basal Program: 1a1# 
-* Cancel Bolus: 1f05
-* 
+## What you'll need
+
+One of the following.  If you use the TI stick, you will need to flash firmware onto it using a CC-Debugger.
+
+  * [RFCat](http://int3.cc/products/rfcat)
+  * [TI USB Stick](http://www.ti.com/tool/cc1111emk868-915)
 
 ## Installation
 
@@ -42,32 +38,6 @@ pip install -e .
 =======
 ##### ** Please note the below is notes about a project created to better understand how the omnipod communicates **
 
-#### RF HARDWARE used to RECEIVE transmissions from PDM or Pod
-
-For SDR capture, you can use one of the following devices, or any SDR capable of capturing 2048000 samples per second at the 433.90MHz rf range. You'll need software to demodulate this data (see below):
-  * [rtl-sdr usb dongle](http://saw.amazon.com/gp/product/B00P2UOU72) 
-  * [HackRF One](https://greatscottgadgets.com/hackrf/)
-
-For hardware based demodulation, you can use a cc111x based device like one of these:
-  * [RFCat](http://int3.cc/products/rfcat)
-  * [TI USB Stick](http://www.ti.com/tool/cc1111emk868-915)
-  * [RileyLink](https://github.com/ps2/rileylink)
-
-#### SOFTWARE for capturing/decoding SDR signals
-  * [SDR#](http://www.rtl-sdr.com/tag/sdrsharp) - to capture sdr iq data
-  * [omnipod_decode](https://github.com/ps2/omnipod_rf) This code will extract packets of correct length from raw sdr iq data, and will verify CRCs.
-  * [baudline](http://www.baudline.com/) will show signal characteristics
-
-#### SOFTWARE for doing hardware based demodulation:
-
-  * [rfcat](https://bitbucket.org/atlas0fd00m/rfcat)
-  * [omni.py](https://github.com/openaps/openomni/blob/master/rfcat/omni.py) - tool to explore omnipod signals with rfcat
-  * [SmartRF Studio](http://www.ti.com/tool/smartrftm-studio) and an [omnipod configuration](https://github.com/ps2/omnipod_decode/blob/master/cc1110_24mhz.xml) for it.
-  
-
-#### Example signal from PDM to request a Status response from Pod (containing Basal routine, IOB, etc)
-
-We may add more content to the wiki here [Wiki](https://github.com/openaps/omnidocs/wiki)
 
 #### Stay Up to Date!
 [Join the Slack channel](https://omniapsslack.azurewebsites.net/) to discuss this work.
