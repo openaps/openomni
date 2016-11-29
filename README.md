@@ -8,8 +8,8 @@ We have figured out the RF modulation. See the [RF Modulation wiki page](https:/
 ## Areas to focus on
 
 There are two ways we could use help, beyond trying to crack the two byte crc at the end of messages (though if you want to tackle that, please do!):
-1) capture data from different pods and commands using omni_listen_rfcat. If you can document what was being done with the PDM while the packets were recorded, that would be a plus, but raw data can be helpful too.  Submit these as gists or post them to #shared-files in the Slack channel.
-2) Start decoding fields for individual commands.  Even without knowing how to generate the CRC, the raw data for commands and responses is clear, so it is possible to start decoding which bytes mean what.  A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
+  1. Capture data from different pods and commands using omni_listen_rfcat. If you can document what was being done with the PDM while the packets were recorded, that would be a plus, but raw data can be helpful too.  Submit these as gists or post them to #shared-files in the Slack channel.
+  2. Start decoding fields for individual commands.  Even without knowing how to generate the CRC, the raw data for commands and responses is clear, so it is possible to start decoding which bytes mean what.  A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
 
 ## What you'll need
 
