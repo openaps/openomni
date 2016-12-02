@@ -2,8 +2,7 @@ import numpy as np
 
 # Takes two byte strings and xor's them
 def diff(m1,m2):
-    xored_bytes = [ord(a) ^ ord(b) for a,b in zip(m1,m2)]
-    return xored_bytes
+    return [ord(a) ^ ord(b) for a,b in zip(m1,m2)]
 
 class DiffMessage(object):
 
@@ -14,9 +13,12 @@ class DiffMessage(object):
         self.m2 = combination[1][0]
         self.c2 = combination[1][1]
 
-        # diffs
+        # message diff
         self.dm = diff(self.m1, self.m2)
+
+        # delta crc, aka xor value!
         self.dc = diff(self.c1, self.c2)
+        self.dc = (self.dc[0] << 8) + self.dc[1]
 
         # diff stats
         diff_bits = np.unpackbits(np.array(self.dm, dtype=np.uint8))
