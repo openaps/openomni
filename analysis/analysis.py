@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
+import itertools
 import dateutil
 from openomni.packet import Packet
+from diff_message import DiffMessage
+
 
 # Takes an array of bits, like [0,1,0,0,1,0,0,0,0,1,0,0],
 # And returns a hex string: '4840'
@@ -21,20 +24,27 @@ def parse_packet_file(filename):
 def packets_to_pandas(packets):
     return pd.DataFrame(packets).set_index('received_at')
 
-def reassemble(df):
-    # (re)assemble raw packet data
-    ptype_values = {
-        'PDM': 0b101,
-        'POD': 0b111,
-        'ACK': 0b010,
-        'CON': 0b100,
-        }
+# This expresses our theory about which bits are message hash, and which bits
+# are included in message hash calculation. Takes a full message and splits it
+# into (message,hash)
+def parts(data):
+    # Everything except ID1, byte 4 (sequence & flags), packet crc, and 16bit chksum
+    msg = data[5:-3]
+    chksum = data[-3:-1]
+    return (msg, chksum)
 
-    blen_hex = df["BLEN"].map(lambda x: chr(int(x)).encode('hex'))
-    ptype_val = df["PTYPE"].map(lambda x: ptype_values[x] << 5)
-    seq_val = df["SEQ"].map(lambda x: int(x))
-    b5_hex = (ptype_val + seq_val).map(lambda x: chr(x).encode('hex'))
-    crc_hex = df["CRC"].map(lambda x: x.rstrip())
-    header_hex_data = df["ID1"] + b5_hex
-    raw_hex_data = df["ID2"] + df["B9"] + blen_hex + df["MTYPE"] + df["BODY"]
-    return header_hex_data + raw_hex_data + crc_hex
+# Builds a dictionary that maps bitwise observed changes in messages to
+# bitwise changes in message hash
+def build_bitdiff_dictionary(packets):
+    data = [parts(p.tx_data()) for p in packets]
+
+    cracked_bits_dict = {}
+    for c in itertools.combinations(data, 2):
+        d = DiffMessage(c)
+        if d.diff_bits_count == 0:
+            continue
+        if d.diff_bits_key in cracked_bits_dict:
+            cracked_bits_dict[d.diff_bits_key].update_observation(d)
+        else:
+            cracked_bits_dict[d.diff_bits_key] = d
+    return cracked_bits_dict
