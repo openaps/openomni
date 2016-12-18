@@ -28,6 +28,7 @@ class Packet(object):
     PACKET_TYPE_CON = 0b100
 
     MAX_BODY_SEGMENT_LEN = 23
+    MAX_CON_BODY_SEGMENT_LEN = 30
 
     PACKET_TYPE_STRINGS = {
         PACKET_TYPE_PDM: "PDM",
