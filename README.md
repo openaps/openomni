@@ -3,7 +3,7 @@ Documentation and python library for decoding omnipod communications. [Join the 
 
 ## Current Status
 
-We have figured out the RF modulation. See the [RF Modulation wiki page](https://github.com/openaps/openomni/wiki/RF-Modulation) for more details and tools.  We are working on trying to figure out a [CRC-like hash](https://github.com/openaps/openomni/wiki/Message-Body-Checksum) that is appended to each message, as well as decoding meaning of the bytes for each of the [Commands](https://github.com/openaps/openomni/wiki/Protocol-Commands)
+We have figured out the RF modulation. See the [RF Modulation wiki page](https://github.com/openaps/openomni/wiki/RF-Modulation) for more details and tools.  We have also figured out [packet structure](https://github.com/openaps/openomni/tree/master/packets), including the packet CRC and message CRC(!) We are now working on decoding decoding meaning of the bytes in the body for each of the [Commands](https://github.com/openaps/openomni/wiki/Protocol-Commands)
 
 ## Areas to focus on
 
