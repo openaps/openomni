@@ -23,7 +23,6 @@ def send_packet(device, packet):
     sync_word = "3c"
     packet_prefix = (("ab" * preamble_length) + sync_word).decode('hex')
     full_data = packet_prefix + packet.tx_data()
-    print("Sending %s" % packet)
 
     # Turn off modem preamble and syncword since we are doing our own
     openomni.rf.disable_preamble(device)
@@ -38,8 +37,13 @@ def send_message(device, pod_id, seq, byte9, body_hex):
 
     body = body_hex.decode('hex')
     msg = Message(pod_id, seq, byte9, body)
-    packet = msg.packets()[0]
-    send_packet(device, packet)
+    for packet in msg.packets():
+        send_packet(device, packet)
+        packet.received_at = datetime.datetime.now()
+        print("%s" % packet)
+        packet = recv_message(device)
+        print("%s" % packet)
+
 
 def send_ack(device, pod_id, seq):
     packet = Packet()
@@ -75,9 +79,6 @@ def recv_message(d):
 def main(options=None):
 
     parser = argparse.ArgumentParser(description='Send status packet to POD using rfcat.')
-    parser.add_argument('--json', action='store_true',
-                        help='print as json (default: text line)')
-
     parser.add_argument('pod_id', help='the pod id', type=str)
     parser.add_argument('seq', help='sequence number of the packet you wish to craft', type=int)
     parser.add_argument('byte9', help='byte9 value in hexadecimal', type=str)
@@ -91,16 +92,15 @@ def main(options=None):
     byte9 = ord(args.byte9.decode('hex'))
     seq = int(args.seq)
 
+    # 1a0e 3f63a4f7 0100d3013840012c012c160e7c000bb8000927c00bb8000927c0
+    # 1a0e 1b8746cc 0100d3013840012c012c160e7c000bb8000927c00bb8000927c0
+    # 1a0e 4f64a5fa 0100d3013840012c012c160e7c000bb8000927c00bb8000927c0
+
     send_message(d, pod_id=args.pod_id, seq=seq, byte9=byte9,
                 body_hex=args.body)
 
-    json = args.json
-
     packet = recv_message(d)
-    if json:
-        print(packet.as_json())
-    else:
-        print(packet)
+    print(packet)
 
     if packet.packet_type == packet.PACKET_TYPE_POD:
         send_ack(d, args.pod_id, int(args.seq) + 2)
