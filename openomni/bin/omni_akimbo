@@ -20,12 +20,6 @@ import logging
 import atexit
 
 
-def flip_bytes(data):
-    """flip_bytes inverts bytes"""
-    bytes = map(lambda x: ord(x) ^ 0xff, data)
-    return bytearray(bytes).__str__()
-
-
 def sniff_packets(rfcatidx, pktq, rfcatdebug=False):
     log = logging.getLogger('sniff_packets@{}'.format(rfcatidx))
     log.debug('opening device')

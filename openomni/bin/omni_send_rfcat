@@ -1,5 +1,8 @@
 #!/usr/bin/env python2
 
+# Try requesting status like this:
+# ./omni_send_rfcat 1f01482a 12 00 0e0100
+
 from __future__ import print_function
 from __future__ import unicode_literals
 from __future__ import division
@@ -9,31 +12,18 @@ from rflib import RfCat, keystop, ChipconUsbTimeoutException
 import argparse
 import openomni.rf
 from openomni.packet import Packet
+from openomni.message import Message
 import datetime
 import time
 import sys
 
-
-def send_packet(device, pod_id, seq, byte9_hex, message_type_hex, body_hex):
-
-    body = body_hex.decode('hex')
-
-    packet = Packet()
-    packet.pod_address_1 = pod_id
-    packet.packet_type = Packet.PACKET_TYPE_PDM
-    packet.sequence = int(seq)
-    packet.pod_address_2 = pod_id
-    packet.byte9 = ord(byte9_hex.decode('hex'))
-    packet.body = body
-    packet.body_len = len(body)
-    packet.message_type = message_type_hex.decode('hex')
-
+def send_packet(device, packet):
     # Prepend preamble bytes
     preamble_length = 235   # 324 is full amount, but rfcat errors if total length is > 255
     sync_word = "3c"
     packet_prefix = (("ab" * preamble_length) + sync_word).decode('hex')
     full_data = packet_prefix + packet.tx_data()
-    print("Sending %s" % full_data.encode('hex'))
+    print("Sending %s" % packet)
 
     # Turn off modem preamble and syncword since we are doing our own
     openomni.rf.disable_preamble(device)
@@ -44,29 +34,23 @@ def send_packet(device, pod_id, seq, byte9_hex, message_type_hex, body_hex):
     # Restore modem preamble and syncword
     openomni.rf.enable_preamble(device)
 
+def send_message(device, pod_id, seq, byte9, body_hex):
 
-def main(options=None):
+    body = body_hex.decode('hex')
+    msg = Message(pod_id, seq, byte9, body)
+    packet = msg.packets()[0]
+    send_packet(device, packet)
 
-    parser = argparse.ArgumentParser(description='Send status packet to POD using rfcat.')
-    parser.add_argument('--json', action='store_true',
-                        help='print as json (default: text line)')
+def send_ack(device, pod_id, seq):
+    packet = Packet()
+    packet.pod_address_1 = pod_id
+    packet.sequence = seq
+    packet.pod_address_2 = pod_id
+    packet.packet_type = packet.PACKET_TYPE_ACK
+    send_packet(device, packet)
 
-    parser.add_argument('pod_id', help='the pod id', type=str)
-    parser.add_argument('seq', help='sequence number of the packet you wish to craft', type=int)
-    parser.add_argument('byte9', help='byte9 value in hexadecimal', type=str)
-    parser.add_argument('message_type', help='message_type value in hexadecimal', type=str)
-    parser.add_argument('body', help='body of packet in hexadecimal', type=str)
 
-    args = parser.parse_args()
-
-    d = RfCat(0, debug=False)
-    openomni.rf.configure_rfcat(d)
-
-    send_packet(d, pod_id=args.pod_id, seq=args.seq, byte9_hex=args.byte9,
-                message_type_hex=args.message_type, body_hex=args.body)
-
-    json = args.json
-
+def recv_message(d):
     while not keystop():
         try:
             pkt, ts = d.RFrecv()
@@ -79,16 +63,52 @@ def main(options=None):
                 packet.received_at = rcv_time
                 if packet.is_valid():
                     # print packet.data.encode('hex')
-                    if json:
-                        print(packet.as_json())
-                    else:
-                        print(packet)
+                    return packet
                 x += 1
 
         except ChipconUsbTimeoutException:
             time.sleep(0.5)
 
     sys.stdin.read(1)
+
+
+def main(options=None):
+
+    parser = argparse.ArgumentParser(description='Send status packet to POD using rfcat.')
+    parser.add_argument('--json', action='store_true',
+                        help='print as json (default: text line)')
+
+    parser.add_argument('pod_id', help='the pod id', type=str)
+    parser.add_argument('seq', help='sequence number of the packet you wish to craft', type=int)
+    parser.add_argument('byte9', help='byte9 value in hexadecimal', type=str)
+    parser.add_argument('body', help='body of packet in hexadecimal', type=str)
+
+    args = parser.parse_args()
+
+    d = RfCat(0, debug=False)
+    openomni.rf.configure_rfcat(d)
+
+    byte9 = ord(args.byte9.decode('hex'))
+    seq = int(args.seq)
+
+    send_message(d, pod_id=args.pod_id, seq=seq, byte9=byte9,
+                body_hex=args.body)
+
+    json = args.json
+
+    packet = recv_message(d)
+    if json:
+        print(packet.as_json())
+    else:
+        print(packet)
+
+    if packet.packet_type == packet.PACKET_TYPE_POD:
+        send_ack(d, args.pod_id, int(args.seq) + 2)
+    else:
+        print("Missed response")
+
+    packet = recv_message(d)
+
 
 
 if __name__ == '__main__':
