@@ -1,6 +1,8 @@
 # OpenOmni
 Documentation and python library for decoding omnipod communications. [Join the Slack channel](https://omniaps.slack.com/) to discuss this work.
 
+[![Build Status](https://travis-ci.org/openaps/openomni.svg?branch=master)](https://travis-ci.org/openaps/openomni)
+
 ## Current Status
 
 We have figured out the RF modulation. See the [RF Modulation wiki page](https://github.com/openaps/openomni/wiki/RF-Modulation) for more details and tools.  We have also figured out [packet structure](https://github.com/openaps/openomni/tree/master/packets), including the packet CRC and message CRC(!) We are now working on decoding decoding meaning of the bytes in the body for each of the [Commands](https://github.com/openaps/openomni/wiki/Protocol-Commands)
