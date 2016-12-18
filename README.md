@@ -1,5 +1,5 @@
 # OpenOmni
-Documentation and python library for decoding omnipod communications. [Join the Slack channel](https://omniapsslack.azurewebsites.net/) to discuss this work.
+Documentation and python library for decoding omnipod communications. [Join the Slack channel](https://omniaps.slack.com/) to discuss this work.
 
 ## Current Status
 
