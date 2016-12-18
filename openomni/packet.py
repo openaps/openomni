@@ -60,20 +60,24 @@ class Packet(object):
         if self.packet_type != Packet.PACKET_TYPE_CON:
             self.pod_address_2 = data[5:9].encode("hex")
 
-        if len(data) > 13:
+        if (self.packet_type != Packet.PACKET_TYPE_CON and
+           self.packet_type != Packet.PACKET_TYPE_ACK and len(data) > 13):
             self.byte9 = ord(data[9])
             self.body_len = ord(data[10])
             self.message_type = data[11:13]
-            self.body = data[13:(13+min(Packet.MAX_BODY_SEGMENT_LEN,self.body_len))]
+            segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,self.body_len,len(data)-14)
+            self.body = data[13:(13+segment_len)]
+            self.crc = ord(data[13+segment_len])
         else:
             self.byte9 = None
             self.body_len = 0
             self.message_type = None
             self.body = None
+            self.crc = ord(data[9])
 
         if self.packet_type == Packet.PACKET_TYPE_CON:
             self.body = data[5:-1]
-        self.crc = ord(data[-1])
+            self.crc = ord(data[-1])
 
     @staticmethod
     def from_hex(hex_str):

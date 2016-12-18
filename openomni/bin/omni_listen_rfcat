@@ -14,12 +14,6 @@ from openomni.packet import Packet
 import sys
 
 
-def flip_bytes(data):
-    """flip_bytes inverts bytes"""
-    bytes = map(lambda x: ord(x) ^ 0xff, data)
-    return bytearray(bytes).__str__()
-
-
 def main(options=None):
 
     parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
@@ -54,6 +48,7 @@ def main(options=None):
                         print(packet.as_json())
                     else:
                         print(packet)
+                    break
                 x += 1
 
         except ChipconUsbTimeoutException:
