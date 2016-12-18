@@ -6,7 +6,7 @@
  * 101 = PDM
  * 111 = POD
  * 010 = ACK
- * 100 = Packet Continued
+ * 100 = CON (Packet Continued)
 
 #### Status Packet Exchange 
 
@@ -16,14 +16,14 @@
 
 #### Bolus Packet Exchange
 
- * PDM (0e01) (Status Request))
+ * PDM (0e01) (Status Request)
  * POD (1d18) (Status Response)
  * ACK
  * PDM (1a0e) (Bolus Request)
  * ACK
- * 100
+ * CON
  * POD (1d**) (Delivery Confirmation??)
- * 100
+ * CON
  * PDM (0e01) (Status Request)
  * POD (1d18) (Status Response)
  * ACK
@@ -32,6 +32,6 @@
 
  * PDM (1a0e) (Basal Change Request)
  * ACK
- * 100
+ * CON
  * POD (1d**) (Basal Confirmation)
  * ACK
