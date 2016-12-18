@@ -43,6 +43,7 @@ class Packet(object):
         self.body = None
         self.body_len = None
         self.message_type = None
+        self.crc = None
         if len(data) < 10:
             return
         self.body = None
@@ -50,10 +51,6 @@ class Packet(object):
         byte5 = ord(data[4])
 
         self.packet_type = byte5 >> 5
-        if self.packet_type in Packet.PACKET_TYPE_STRINGS:
-            self.packet_type_str = Packet.PACKET_TYPE_STRINGS.get(self.packet_type)
-        else:
-            self.packet_type_str = format(self.packet_type, '#05b')[2:]
 
         self.sequence = byte5 & 0b11111
 
@@ -89,6 +86,12 @@ class Packet(object):
         bytes = map(lambda x: ord(x) ^ 0xff, data)
         return bytearray(bytes).__str__()
 
+    def packet_type_str(self):
+        if self.packet_type in Packet.PACKET_TYPE_STRINGS:
+            return Packet.PACKET_TYPE_STRINGS.get(self.packet_type)
+        else:
+            return format(self.packet_type, '#05b')[2:]
+
     def assign_from_string(self, line):
         try:
             elems = line.split(' ')
@@ -102,7 +105,6 @@ class Packet(object):
                 if key == "ID2":
                     self.pod_address_2 = v
                 if key == "PTYPE":
-                    self.packet_type_str = v
                     self.packet_type = self.PACKET_TYPES.get(v)
                 if key == "SEQ":
                     self.sequence = int(v)
@@ -184,21 +186,23 @@ class Packet(object):
 
         base_str += "ID1:%s PTYPE:%s SEQ:%02d" % (
                 self.pod_address_1,
-                self.packet_type_str,
+                self.packet_type_str(),
                 self.sequence,
             )
+
+        crc = self.crc or self.computed_crc()
 
         if self.packet_type == Packet.PACKET_TYPE_ACK:
             return "%s ID2:%s CRC:%02x" % (
                 base_str,
                 self.pod_address_2,
-                self.crc,
+                crc,
             )
         if self.packet_type == Packet.PACKET_TYPE_CON:
             return "%s CON:%s CRC:%02x" % (
                 base_str,
                 self.body.encode('hex'),
-                self.crc,
+                crc,
             )
         if self.body != None:
             # All other packets with enough bytes to have a body
@@ -209,7 +213,7 @@ class Packet(object):
                 self.body_len,
                 self.message_type.encode('hex'),
                 self.body.encode('hex'),
-                self.crc,
+                crc,
             )
         else:
             # All other packets without body
@@ -227,7 +231,7 @@ class Packet(object):
             obj = {
                 "pod_address_1": self.pod_address_1,
                 "packet_type": self.packet_type,
-                "packet_type_str": self.packet_type_str,
+                "packet_type_str": self.packet_type_str(),
                 "sequence": self.sequence,
                 "pod_address_2": self.pod_address_2,
                 "crc": self.crc,
@@ -267,5 +271,8 @@ class Packet(object):
     def compute_crc_for(self, data):
         return crccheck.crc.Crc8.calc(data)
 
+    def computed_crc(self):
+        return self.compute_crc_for(bytearray(self.tx_data()[:-1]))
+
     def crc_ok(self):
-        return self.crc == self.compute_crc_for(bytearray(self.tx_data()[:-1]))
+        return self.crc == None or self.crc == self.computed_crc()
