@@ -16,3 +16,14 @@ class MessageTestCase(unittest.TestCase):
         packets = msg.packets()
         self.assertEqual(len(packets), 1)
         self.assertEqual(packets[0].raw_hex(), "1f07b1eea81f07b1ee08030e010082b3a4")
+
+    def test_multiple_packet_message(self):
+        body = "1a0eeb5701b202010a0101a000340034170d000208000186a0000000000000".decode('hex')
+        msg = Message("1f07b1ee", 14, 0x18, body)
+        packets = msg.packets()
+        self.assertEqual(len(packets), 2)
+        self.assertEqual(packets[0].raw_hex(), "1f07b1eeae1f07b1ee181f1a0eeb5701b202010a0101a000340034170d000208000186a019")
+        self.assertEqual(packets[1].raw_hex(), "1f07b1ee900000000000000251e2")
+
+
+        #1f07b1ee900000000000000251e2

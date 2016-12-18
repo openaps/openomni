@@ -23,16 +23,31 @@ class Message(object):
         return chr(crc >> 8) + chr(crc & 0xff)
 
     def packets(self):
-        if len(self.body) > 23:
-            raise RuntimeError("No support for multi-packet messages yet.")
+        message_type = self.body[0:2]
+        body_remaining = self.body[2:] + self.computed_crc_bytes()
+        packets = []
+        while len(body_remaining) > 0:
+            packet = Packet()
+            packet.pod_address_1 = self.pod_id
+            packet.sequence = self.start_seq + len(packets) * 2
+            if len(packets) == 0:
+                packet.packet_type = Packet.PACKET_TYPE_PDM
+                packet.pod_address_2 = self.pod_id
+                packet.byte9 = self.byte9
+                packet.message_type = message_type
+                segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,len(body_remaining))
+                packet.body = body_remaining[:segment_len]
+                packet.body_len = len(self.body)
+                body_remaining = body_remaining[segment_len:]
+            else:
+                packet.packet_type = Packet.PACKET_TYPE_CON
+                segment_len = min(Packet.MAX_CON_BODY_SEGMENT_LEN,len(body_remaining))
+                packet.body = body_remaining[:segment_len]
+                body_remaining = body_remaining[segment_len:]
 
-        packet = Packet()
-        packet.pod_address_1 = self.pod_id
-        packet.packet_type = Packet.PACKET_TYPE_PDM
-        packet.sequence = self.start_seq
-        packet.pod_address_2 = self.pod_id
-        packet.byte9 = self.byte9
-        packet.body = self.body[2:] + self.computed_crc_bytes()
-        packet.body_len = len(self.body)
-        packet.message_type = self.body[0:2]
-        return [packet]
+            packets.append(packet)
+
+        return packets
+
+        #1f07b1ee9000000000000002510251f3
+        #1f07b1ee900000000000000251e2
