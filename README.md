@@ -5,7 +5,7 @@ Documentation and python library for decoding omnipod communications. [Join the 
 
 ## Current Status
 
-We have figured out the RF modulation. See the [RF Modulation wiki page](https://github.com/openaps/openomni/wiki/RF-Modulation) for more details and tools.  We have also figured out [packet structure](https://github.com/openaps/openomni/tree/master/packets), including the packet CRC and message CRC(!) We are now working on decoding decoding meaning of the bytes in the body for each of the [Commands](https://github.com/openaps/openomni/wiki/Protocol-Commands)
+We have figured out the RF modulation. See the [RF Modulation wiki page](https://github.com/openaps/openomni/wiki/RF-Modulation) for more details and tools.  We have also figured out [packet structure](https://github.com/openaps/openomni/tree/master/packets), including the packet CRC and message CRC(!) We are now working on decoding meaning of the bytes in the body for each of the [Commands](https://github.com/openaps/openomni/wiki/Protocol-Commands).
 
 ## Areas to focus on
 
@@ -35,10 +35,10 @@ git clone https://github.com/openaps/openomni.git
 cd openomni
 pip install -e .
 ```
-** note: you may need to add 'sudo' before the pip install line if you are using a system python install
+** Note: You may need to add 'sudo' before the pip install line if you are using a system python install.
 
 =======
-##### ** Please note the below is notes about a project created to better understand how the omnipod communicates **
+##### ** Please note the details below are related to a project created to better understand how the omnipod communicates **
 
 
 #### Stay Up to Date!
@@ -61,8 +61,8 @@ pip install -e .
 
 #### Rules for Contributing to this Repository
 
-* All code updates require the use of Pull Requests
-* Documentation updates can be made directly on master
+* All code updates require the use of Pull Requests.
+* Documentation updates can be made directly on master.
 
 ***
 https://files.slack.com/files-pri/T0B2X082E-F0D390KTP/download/pod_datacap_23oct2015.odt
