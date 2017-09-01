@@ -14,7 +14,7 @@ colwidth=32
 35-39: sequence
 40-71: pod_address_2
 72-79: byte9
-80-87: total_message_length
+80-87: blen (total body length)
 88-287: body segment data
 288-295: crc
 }
@@ -90,7 +90,7 @@ colwidth=32
   <path d="M 640 160 L 640 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 640 200 L 448 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 448 200 L 448 160" fill="none" stroke="rgb(0,0,0)" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="108" x="544.0" y="186">total_message_length</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="120" x="544.0" y="186">blen (total body length)</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="768" x="64" y="400" />
   <path d="M 64 400 L 832 400" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 400 L 832 440" fill="none" stroke="rgb(0,0,0)" />
