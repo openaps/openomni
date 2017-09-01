@@ -5,7 +5,7 @@ colwidth=32
 35-39: sequence
 40-71: pod_address_2
 72-79: byte9
-80-87: total_body_length
-88-287: body data
+80-87: total_message_length
+88-287: body segment data
 288-295: crc
 }

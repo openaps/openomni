@@ -25,5 +25,7 @@ class MessageTestCase(unittest.TestCase):
         self.assertEqual(packets[0].raw_hex(), "1f07b1eeae1f07b1ee181f1a0eeb5701b202010a0101a000340034170d000208000186a019")
         self.assertEqual(packets[1].raw_hex(), "1f07b1ee900000000000000251e2")
 
-
-        #1f07b1ee900000000000000251e2
+    def test_data_for_crc(self):
+        body = "1a0e3f63a4f90100d3013840012c012c160e7c000bb8000927c00bb8000927c0".decode('hex')
+        msg = Message("1f07b1ee", 14, 0x18, body)
+        self.assertEqual(len(msg.data_for_crc()), 38)

@@ -14,8 +14,8 @@ colwidth=32
 35-39: sequence
 40-71: pod_address_2
 72-79: byte9
-80-87: total_body_length
-88-287: body data
+80-87: total_message_length
+88-287: body segment data
 288-295: crc
 }
 </desc>
@@ -90,13 +90,13 @@ colwidth=32
   <path d="M 640 160 L 640 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 640 200 L 448 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 448 200 L 448 160" fill="none" stroke="rgb(0,0,0)" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="88" x="544.0" y="186">total_body_length</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="108" x="544.0" y="186">total_message_length</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="768" x="64" y="400" />
   <path d="M 64 400 L 832 400" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 400 L 832 440" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 440 L 64 440" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 64 440 L 64 400" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="50" x="448.0" y="426">body data</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="97" x="448.5" y="426">body segment data</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="192" x="64" y="440" />
   <path d="M 64 440 L 256 440" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 256 440 L 256 480" fill="none" stroke="rgb(0,0,0)" />
@@ -114,35 +114,35 @@ colwidth=32
   <path d="M 832 160 L 832 200" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
   <path d="M 832 200 L 640 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 640 200 L 640 160" fill="none" stroke="rgb(0,0,0)" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="50" x="736.0" y="186">body data</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="97" x="736.5" y="186">body segment data</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="768" x="64" y="200" />
   <path d="M 64 200 L 832 200" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 200 L 832 240" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
   <path d="M 832 240 L 64 240" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 64 240 L 64 200" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="50" x="448.0" y="226">body data</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="97" x="448.5" y="226">body segment data</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="768" x="64" y="240" />
   <path d="M 64 240 L 832 240" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 240 L 832 280" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
   <path d="M 832 280 L 64 280" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 64 280 L 64 240" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="50" x="448.0" y="266">body data</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="97" x="448.5" y="266">body segment data</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="768" x="64" y="280" />
   <path d="M 64 280 L 832 280" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 280 L 832 320" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
   <path d="M 832 320 L 64 320" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 64 320 L 64 280" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="50" x="448.0" y="306">body data</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="97" x="448.5" y="306">body segment data</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="768" x="64" y="320" />
   <path d="M 64 320 L 832 320" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 320 L 832 360" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
   <path d="M 832 360 L 64 360" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 64 360 L 64 320" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="50" x="448.0" y="346">body data</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="97" x="448.5" y="346">body segment data</text>
   <rect fill="rgb(255,255,255)" height="40" stroke="rgb(255,255,255)" width="768" x="64" y="360" />
   <path d="M 64 360 L 832 360" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 832 360 L 832 400" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
   <path d="M 832 400 L 64 400" fill="none" stroke="rgb(0,0,0)" />
   <path d="M 64 400 L 64 360" fill="none" stroke="rgb(0,0,0)" stroke-dasharray="4" />
-  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="50" x="448.0" y="386">body data</text>
+  <text fill="rgb(0,0,0)" font-family="sans-serif" font-size="11" font-style="normal" font-weight="normal" text-anchor="middle" textLength="97" x="448.5" y="386">body segment data</text>
 </svg>
