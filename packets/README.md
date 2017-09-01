@@ -1,5 +1,5 @@
 # Packet Diagrams
-![Alert](https://rawgit.com/openaps/omnidocs/master/packets/status.svg)
+![Alert](https://rawgit.com/openaps/omnidocs/master/packets/packet.svg)
 
 #### packet_type (3 bits)
 
