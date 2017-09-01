@@ -1,5 +1,7 @@
-# Packet Diagrams
-![Alert](https://rawgit.com/openaps/omnidocs/master/packets/status.svg)
+# Packet Structure
+![Alert](https://rawgit.com/openaps/omnidocs/master/packets/packet.svg)
+
+At the hardware level, the pod_address_1, packet type, sequence, and crc are stripped, and the remaining data is presented to the firmware.
 
 #### packet_type (3 bits)
 
@@ -8,30 +10,11 @@
  * 010 = ACK
  * 100 = CON (Packet Continued)
 
-#### Status Packet Exchange 
+#### sequence (5 bits)
 
- * PDM (0e01) (Status Request)
- * POD (1d18) (Status Response)
- * ACK
+A counter that wraps around from 0 to 31.  Each subsequent packet, whether from PDM or pod, should have the next sequence value
 
-#### Bolus Packet Exchange
+#### crc
 
- * PDM (0e01) (Status Request)
- * POD (1d18) (Status Response)
- * ACK
- * PDM (1a0e) (Bolus Request)
- * ACK
- * CON
- * POD (1d**) (Delivery Confirmation??)
- * CON
- * PDM (0e01) (Status Request)
- * POD (1d18) (Status Response)
- * ACK
+A standard 8 bit CRC
 
-#### Temp Basal Packet Exchange
-
- * PDM (1a0e) (Basal Change Request)
- * ACK
- * CON
- * POD (1d**) (Basal Confirmation)
- * ACK
