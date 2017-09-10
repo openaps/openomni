@@ -1,5 +1,6 @@
 import unittest
 from message import Message
+from commands import *
 
 class MessageTestCase(unittest.TestCase):
 
@@ -25,5 +26,15 @@ class MessageTestCase(unittest.TestCase):
         self.assertEqual(packets[0].raw_hex(), "1f07b1eeae1f07b1ee181f1a0eeb5701b202010a0101a000340034170d000208000186a019")
         self.assertEqual(packets[1].raw_hex(), "1f07b1ee900000000000000251e2")
 
-
         #1f07b1ee900000000000000251e2
+
+    def test_commands_from_message(self):
+
+        body = "1a0e9891474a01008101384000040004".decode('hex')
+        msg = Message("1f01482a", 0, 0x14, body)
+
+        self.assertEqual(1, len(msg.commands()))
+
+        insulin_cmd = msg.commands()[0]
+
+        self.assertTrue(isinstance(insulin_cmd, InsulinScheduleCommand))

@@ -19,7 +19,6 @@ def json_serial(obj):
     raise TypeError ("Type not serializable")
 
 
-
 class Packet(object):
 
     PACKET_TYPE_PDM = 0b101
