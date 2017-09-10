@@ -8,6 +8,11 @@ class MessageTestCase(unittest.TestCase):
         msg = Message("1f01482a", 5, 0x10, "0e0100".decode('hex'))
         self.assertEqual(msg.data_for_crc(), "1f01482a10030e0100".decode('hex'))
 
+    def test_data_for_longer_crc(self):
+        body = "1a0e3f63a4f90100d3013840012c012c160e7c000bb8000927c00bb8000927c0".decode('hex')
+        msg = Message("1f07b1ee", 14, 0x18, body)
+        self.assertEqual(len(msg.data_for_crc()), 38)
+
     def test_crc(self):
         msg = Message("1f01482a", 5, 0x10, "0e0100".decode('hex'))
         self.assertEqual(msg.computed_crc(), 0x802c)
@@ -38,8 +43,3 @@ class MessageTestCase(unittest.TestCase):
         insulin_cmd = msg.commands()[0]
 
         self.assertTrue(isinstance(insulin_cmd, InsulinScheduleCommand))
-        
-    def test_data_for_crc(self):
-        body = "1a0e3f63a4f90100d3013840012c012c160e7c000bb8000927c00bb8000927c0".decode('hex')
-        msg = Message("1f07b1ee", 14, 0x18, body)
-        self.assertEqual(len(msg.data_for_crc()), 38)
