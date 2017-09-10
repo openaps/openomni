@@ -2,3 +2,5 @@
 *.egg-info
 .ipynb_checkpoints
 .cache
+.DS_Store
+*.swp
