@@ -1,5 +1,6 @@
 import crc16
 from packet import Packet
+from commands import *
 
 class Message(object):
     def __init__(self, pod_id, start_seq, byte9, body=""):
@@ -21,6 +22,23 @@ class Message(object):
     def computed_crc_bytes(self):
         crc = self.computed_crc()
         return chr(crc >> 8) + chr(crc & 0xff)
+
+    def commands(self):
+        cmd_idx = 0
+        cmds = []
+        while cmd_idx < len(self.body)-1:
+            cmd_type = ord(self.body[cmd_idx])
+            cmd_len = ord(self.body[cmd_idx+1])
+            cmd_class = COMMAND_TYPES.get(cmd_type)
+            if not cmd_class:
+                print("Unknown command type 0x%02x" % cmd_type)
+                #raise RuntimeError("Unknown command type: 0x%02x" % cmd_type)
+                cmd_class = UnknownCommand
+
+            cmds.append(cmd_class(self.body[cmd_idx+2:cmd_idx+2+cmd_len]))
+            cmd_idx += cmd_len + 2
+
+        return cmds
 
     def packets(self):
         message_type = self.body[0:2]
