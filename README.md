@@ -39,6 +39,7 @@ cd openomni
 pip install -e .
 ```
 ** Note: You may need to add 'sudo' before the pip install line if you are using a system python install.
+
 ** Note: You can capture packets plugging an RFCat into a USB port, go to the command line, and then navigate to this directory:
 /openomni/bin/  and type:
 omni_listen_rfcat
