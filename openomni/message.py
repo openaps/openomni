@@ -41,8 +41,7 @@ class Message(object):
         return cmds
 
     def packets(self):
-        message_type = self.body[0:2]
-        body_remaining = self.body[2:] + self.computed_crc_bytes()
+        body_remaining = self.body + self.computed_crc_bytes()
         packets = []
         while len(body_remaining) > 0:
             packet = Packet()
@@ -52,7 +51,6 @@ class Message(object):
                 packet.packet_type = Packet.PACKET_TYPE_PDM
                 packet.pod_address_2 = self.pod_id
                 packet.byte9 = self.byte9
-                packet.message_type = message_type
                 segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,len(body_remaining))
                 packet.body = body_remaining[:segment_len]
                 packet.body_len = len(self.body)
@@ -66,6 +64,3 @@ class Message(object):
             packets.append(packet)
 
         return packets
-
-        #1f07b1ee9000000000000002510251f3
-        #1f07b1ee900000000000000251e2
