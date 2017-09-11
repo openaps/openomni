@@ -42,7 +42,9 @@ pip install -e .
 
 ** Note: You can capture packets by plugging an RFCat into a USB port -- then go to the command line, and navigate to this directory:
 /openomni/bin/  and type:
+
 omni_listen_rfcat
+
 Then issue commands from your PDM and they'll appear at the command line.
 
 
