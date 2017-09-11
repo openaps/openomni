@@ -25,7 +25,7 @@ One of the following.  If you use the TI stick, you will need to flash firmware 
 Prerequisites:
 * python 2.7
 * [pip](https://pip.readthedocs.io/en/stable/installing/)
-* [rfcat](https://bitbucket.org/atlas0fd00m/rfcat)
+* [rfcat](https://github.com/atlas0fd00m/rfcat)
 * PyUSB - you can install this with pip: `pip install pyusb`, or `sudo pip install pyusb`
 * On mac, you'll need libusb. `brew install libusb` (If you don't have Homebrew installed, go here first: https://brew.sh/)
 
