@@ -95,7 +95,7 @@ class Packet(object):
             self.pod_address_2 = None
             self.byte9 = None
             self.received_at = dateutil.parser.parse(elems[0])
-            legacy_mtype = ""
+            legacy_mtype = bytes()
             for elem in elems[1:]:
                 (key,v) = elem.split(':')
                 if key == "ID1":
