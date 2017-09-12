@@ -3,9 +3,8 @@ from packet import Packet
 from commands import *
 
 class Message(object):
-    def __init__(self, pod_id, start_seq, byte9, body=""):
+    def __init__(self, pod_id, byte9, body=""):
         self.pod_id = pod_id
-        self.start_seq = start_seq
         self.byte9 = byte9
         self.body = body
 
@@ -40,13 +39,13 @@ class Message(object):
 
         return cmds
 
-    def packets(self):
+    def packetize(self, start_sequence):
         body_remaining = self.body + self.computed_crc_bytes()
         packets = []
         while len(body_remaining) > 0:
             packet = Packet()
             packet.pod_address_1 = self.pod_id
-            packet.sequence = self.start_seq + len(packets) * 2
+            packet.sequence = start_sequence + len(packets) * 2
             if len(packets) == 0:
                 packet.packet_type = Packet.PACKET_TYPE_PDM
                 packet.pod_address_2 = self.pod_id
