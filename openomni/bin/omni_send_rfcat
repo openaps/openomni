@@ -36,8 +36,8 @@ def send_packet(device, packet):
 def send_message(device, pod_id, seq, byte9, body_hex):
 
     body = body_hex.decode('hex')
-    msg = Message(pod_id, seq, byte9, body)
-    for packet in msg.packets():
+    msg = Message(pod_id, byte9, body)
+    for packet in msg.packetize(seq):
         send_packet(device, packet)
         packet.received_at = datetime.datetime.now()
         print("%s" % packet)

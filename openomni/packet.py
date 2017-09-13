@@ -26,7 +26,7 @@ class Packet(object):
     PACKET_TYPE_ACK = 0b010
     PACKET_TYPE_CON = 0b100
 
-    MAX_BODY_SEGMENT_LEN = 23
+    MAX_BODY_SEGMENT_LEN = 25
     MAX_CON_BODY_SEGMENT_LEN = 30
 
     PACKET_TYPE_STRINGS = {
@@ -42,7 +42,6 @@ class Packet(object):
         self.packet_type = None
         self.body = None
         self.body_len = None
-        self.message_type = None
         self.crc = None
         if len(data) < 10:
             return
@@ -58,17 +57,15 @@ class Packet(object):
             self.pod_address_2 = data[5:9].encode("hex")
 
         if (self.packet_type != Packet.PACKET_TYPE_CON and
-           self.packet_type != Packet.PACKET_TYPE_ACK and len(data) > 13):
+           self.packet_type != Packet.PACKET_TYPE_ACK and len(data) > 11):
             self.byte9 = ord(data[9])
             self.body_len = ord(data[10])
-            self.message_type = data[11:13]
-            segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,self.body_len,len(data)-14)
-            self.body = data[13:(13+segment_len)]
-            self.crc = ord(data[13+segment_len])
+            segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,self.body_len+2,len(data)-12)
+            self.body = data[11:(11+segment_len)]
+            self.crc = ord(data[11+segment_len])
         else:
             self.byte9 = None
             self.body_len = 0
-            self.message_type = None
             self.body = None
             self.crc = ord(data[9])
 
@@ -98,6 +95,7 @@ class Packet(object):
             self.pod_address_2 = None
             self.byte9 = None
             self.received_at = dateutil.parser.parse(elems[0])
+            legacy_mtype = bytes()
             for elem in elems[1:]:
                 (key,v) = elem.split(':')
                 if key == "ID1":
@@ -118,10 +116,10 @@ class Packet(object):
                     self.byte9 = int(v,16)
                 if key == "BLEN":
                     self.body_len = int(v)
-                if key == "MTYPE":
-                    self.message_type = v.decode('hex')
+                if key == "MTYPE":  # Legacy format
+                    legacy_mtype = v.decode('hex')
                 if key == "BODY":
-                    self.body = v.decode('hex')
+                    self.body = legacy_mtype + v.decode('hex')
         except ValueError:
             self.body = None
         except OverflowError:
@@ -140,7 +138,6 @@ class Packet(object):
         if self.packet_type != self.PACKET_TYPE_CON and self.body is not None:
             data += chr(self.byte9)
             data += chr(self.body_len)
-            data += self.message_type
             data += self.body
         data += chr(self.compute_crc_for(bytearray(data)))
         return data
@@ -153,8 +150,6 @@ class Packet(object):
         if self.pod_address_2 != other.pod_address_2:
             return False
         if self.packet_type != other.packet_type:
-            return False
-        if self.message_type != other.message_type:
             return False
         if self.body != other.body:
             return False
@@ -170,7 +165,6 @@ class Packet(object):
             hash(self.pod_address_1),
             hash(self.pod_address_2),
             hash(self.packet_type),
-            hash(self.message_type),
             hash(self.body),
             hash(self.byte9),
             hash(self.sequence)])
@@ -206,12 +200,11 @@ class Packet(object):
             )
         if self.body != None:
             # All other packets with enough bytes to have a body
-            return "%s ID2:%s B9:%02x BLEN:%s MTYPE:%s BODY:%s CRC:%02x" % (
+            return "%s ID2:%s B9:%02x BLEN:%s BODY:%s CRC:%02x" % (
                 base_str,
                 self.pod_address_2,
                 self.byte9,
                 self.body_len,
-                self.message_type.encode('hex'),
                 self.body.encode('hex'),
                 crc,
             )
@@ -242,8 +235,6 @@ class Packet(object):
             if self.body is not None:
                 obj["body"] = self.body.encode('hex')
                 obj["body_len"] = self.body_len
-            if self.message_type is not None:
-                obj["message_type"] = self.message_type.encode('hex')
             if self.received_at is not None:
                 obj["received_at"] = self.received_at
         else:
@@ -264,7 +255,7 @@ class Packet(object):
             if self.body is None:
                 return False
             big_body_ok = self.body_len > Packet.MAX_BODY_SEGMENT_LEN and len(self.body) == Packet.MAX_BODY_SEGMENT_LEN
-            small_body_ok = self.body_len == 0 or self.body_len == len(self.body)
+            small_body_ok = self.body_len == 0 or self.body_len == len(self.body) - 2
             body_ok = (big_body_ok or small_body_ok)
         return self.crc_ok() and body_ok
 
