@@ -60,7 +60,7 @@ class Packet(object):
            self.packet_type != Packet.PACKET_TYPE_ACK and len(data) > 11):
             self.byte9 = ord(data[9])
             self.body_len = ord(data[10])
-            segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,self.body_len,len(data)-12)
+            segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,self.body_len+2,len(data)-12)
             self.body = data[11:(11+segment_len)]
             self.crc = ord(data[11+segment_len])
         else:

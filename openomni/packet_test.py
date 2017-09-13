@@ -19,6 +19,12 @@ class PacketTestCase(unittest.TestCase):
         self.assertTrue(packet.is_valid())
         self.assertEqual(packet.packet_type, Packet.PACKET_TYPE_CON)
 
+    def test_init_short_pdm_packet_with_extraneous_data(self):
+        packet = Packet("1f00ee84a91f00ee8434030e0100836eb01d10851a72f25018c55185cd5ac348260f515df4ff30ab0422c1c2c904aca172".decode('hex'))
+        self.assertTrue(packet.is_valid())
+        self.assertEqual(packet.packet_type, Packet.PACKET_TYPE_PDM)
+        self.assertEqual(packet.raw_hex(), "1f00ee84a91f00ee8434030e0100836eb0")
+
     def test_init_pdm_packet_with_extraneous_data(self):
         packet = Packet("1f07b1eeae1f07b1ee181f1a0eeb5701b202010a0101a000340034170d000208000186a01912345678".decode('hex'))
         self.assertTrue(packet.is_valid())
