@@ -3,13 +3,13 @@ from packet import Packet
 from commands import *
 
 class Message(object):
-    def __init__(self, pod_id, byte9, body=""):
-        self.pod_id = pod_id
+    def __init__(self, pod_address, byte9, body=""):
+        self.pod_address = pod_address
         self.byte9 = byte9
         self.body = body
 
     def data_for_crc(self):
-        data = self.pod_id.decode('hex')
+        data = self.pod_address.decode('hex')
         data += chr(self.byte9)
         data += chr(len(self.body))
         data += self.body
@@ -44,11 +44,11 @@ class Message(object):
         packets = []
         while len(body_remaining) > 0:
             packet = Packet()
-            packet.pod_address_1 = self.pod_id
+            packet.pod_address_1 = self.pod_address
             packet.sequence = start_sequence + len(packets) * 2
             if len(packets) == 0:
                 packet.packet_type = Packet.PACKET_TYPE_PDM
-                packet.pod_address_2 = self.pod_id
+                packet.pod_address_2 = self.pod_address
                 packet.byte9 = self.byte9
                 segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,len(body_remaining))
                 packet.body = body_remaining[:segment_len]
