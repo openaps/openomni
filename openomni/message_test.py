@@ -52,7 +52,7 @@ class MessageTestCase(unittest.TestCase):
         status_cmd = msg2.commands()[0]
 
         self.assertTrue(isinstance(status_cmd, PodStatusResponse))
-        self.assertIn("tme", str(status_cmd))
+        self.assertIn("time", str(status_cmd))
 
 
 if __name__ == '__main__':
