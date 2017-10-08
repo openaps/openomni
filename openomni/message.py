@@ -1,6 +1,7 @@
 import crc16
 from packet import Packet
-from commands import *
+from commands import COMMAND_TYPES, UnknownCommand
+
 
 class Message(object):
     def __init__(self, pod_address, byte9, body=""):
@@ -28,13 +29,8 @@ class Message(object):
         while cmd_idx < len(self.body)-1:
             cmd_type = ord(self.body[cmd_idx])
             cmd_len = ord(self.body[cmd_idx+1])
-            cmd_class = COMMAND_TYPES.get(cmd_type)
-            if not cmd_class:
-                print("Unknown command type 0x%02x" % cmd_type)
-                #raise RuntimeError("Unknown command type: 0x%02x" % cmd_type)
-                cmd_class = UnknownCommand
-
-            cmds.append(cmd_class(self.body[cmd_idx+2:cmd_idx+2+cmd_len]))
+            cmd_class = COMMAND_TYPES.get(cmd_type, UnknownCommand)
+            cmds.append(cmd_class(self.body[cmd_idx+2:cmd_idx+2+cmd_len], cmd_type))
             cmd_idx += cmd_len + 2
 
         return cmds
