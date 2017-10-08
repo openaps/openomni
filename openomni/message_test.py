@@ -44,6 +44,16 @@ class MessageTestCase(unittest.TestCase):
 
         self.assertTrue(isinstance(insulin_cmd, InsulinScheduleCommand))
 
+        body2 = "1d18002640000000abff835bb5".decode('hex')
+        msg2 = Message("1f01482b", 0x1f, body2)
+
+        self.assertEqual(1, len(msg2.commands()))
+
+        status_cmd = msg2.commands()[0]
+
+        self.assertTrue(isinstance(status_cmd, PodStatusResponse))
+        self.assertIn("time", str(status_cmd))
+
 
 if __name__ == '__main__':
     unittest.main()

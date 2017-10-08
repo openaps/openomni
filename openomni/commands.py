@@ -1,5 +1,6 @@
 """Implement command handlers."""
 from enum import Enum
+import datetime
 
 
 class _BaseCommand(object):
@@ -57,9 +58,23 @@ class InsulinScheduleCommand(_BaseCommand):
         self.rate_schedule = self.data[12:14].encode('hex')
 
     def debug_detail(self):
-        return ("nonce=%s, table=%s, checksum=%04x, duration=%dm, field_a=%s, rate=%fU/hr, rate_schedule=%s" % (self.nonce, self.ScheduleTableType(self.table_num).name, self.checksum, self.duration, self.field_a, self.rate, self.rate_schedule))
+        return ("nonce=%s, table=%s, checksum=%04x, duration=%dm, field_a=%s, rate=%fU/hr, rate_schedule=%s"
+                % (self.nonce, self.ScheduleTableType(self.table_num).name, self.checksum, self.duration,
+                    self.field_a, self.rate, self.rate_schedule))
 
-    
+
+class PodStatusResponse(_BaseCommand):
+    """Handle pod status responses from the Pod to the PDM."""
+
+    COMMAND_ID = 0x1d
+
+    def Populate(self):
+        self.minutes_active = ((ord(self.data[5]) & 0x0f) << 6) + (ord(self.data[6]) >> 2)
+
+    def debug_detail(self):
+        return 'active_time=%s' % (datetime.timedelta(minutes=self.minutes_active))
+
+
 # Build a dictionary of command IDs (eg 0x1a for InsulinScheduleCommand) to the
 # class that implements their parsing
 COMMAND_TYPES = {}
