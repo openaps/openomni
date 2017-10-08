@@ -11,7 +11,7 @@ from __future__ import absolute_import
 from rflib import RfCat, keystop, ChipconUsbTimeoutException
 import argparse
 import openomni.rf
-from openomni.packet import Packet
+from openomni.packet import Packet, PacketType
 from openomni.message import Message
 import datetime
 import time
@@ -50,7 +50,7 @@ def send_ack(device, pod_id, seq):
     packet.pod_address_1 = pod_id
     packet.sequence = seq
     packet.pod_address_2 = pod_id
-    packet.packet_type = packet.PACKET_TYPE_ACK
+    packet.packet_type = PacketType.ACK
     send_packet(device, packet)
 
 
@@ -102,7 +102,7 @@ def main(options=None):
     packet = recv_message(d)
     print(packet)
 
-    if packet.packet_type == packet.PACKET_TYPE_POD:
+    if packet.packet_type == PacketType.POD:
         send_ack(d, args.pod_id, int(args.seq) + 2)
     else:
         print("Missed response")

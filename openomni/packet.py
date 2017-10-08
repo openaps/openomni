@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from __future__ import division
 from __future__ import absolute_import
 
+from enum import Enum
 import json
 import crccheck
 import dateutil.parser
@@ -19,23 +20,19 @@ def json_serial(obj):
     raise TypeError ("Type not serializable")
 
 
-class Packet(object):
+class PacketType(Enum):
+    """Represents the four known packet types."""
+    PDM = 0b101
+    POD = 0b111
+    ACK = 0b010
+    CON = 0b100
 
-    PACKET_TYPE_PDM = 0b101
-    PACKET_TYPE_POD = 0b111
-    PACKET_TYPE_ACK = 0b010
-    PACKET_TYPE_CON = 0b100
+
+class Packet(object):
+    """Represents a RF wire frame of the PDM->Pod protocol."""
 
     MAX_BODY_SEGMENT_LEN = 25
     MAX_CON_BODY_SEGMENT_LEN = 30
-
-    PACKET_TYPE_STRINGS = {
-        PACKET_TYPE_PDM: "PDM",
-        PACKET_TYPE_POD: "POD",
-        PACKET_TYPE_ACK: "ACK",
-        PACKET_TYPE_CON: "CON",
-    }
-    PACKET_TYPES = dict(map(lambda x: [x[1],x[0]],PACKET_TYPE_STRINGS.items()))
 
     def __init__(self, data=""):
         self.received_at = None
@@ -49,15 +46,15 @@ class Packet(object):
         self.pod_address_1 = data[0:4].encode("hex")
         byte5 = ord(data[4])
 
-        self.packet_type = byte5 >> 5
+        self.packet_type = PacketType(byte5 >> 5)
 
         self.sequence = byte5 & 0b11111
 
-        if self.packet_type != Packet.PACKET_TYPE_CON:
+        if self.packet_type != PacketType.CON:
             self.pod_address_2 = data[5:9].encode("hex")
 
-        if (self.packet_type != Packet.PACKET_TYPE_CON and
-           self.packet_type != Packet.PACKET_TYPE_ACK and len(data) > 11):
+        if (self.packet_type != PacketType.CON and
+           self.packet_type != PacketType.ACK and len(data) > 11):
             self.byte9 = ord(data[9])
             self.body_len = ord(data[10])
             segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,self.body_len+2,len(data)-12)
@@ -69,7 +66,7 @@ class Packet(object):
             self.body = None
             self.crc = ord(data[9])
 
-        if self.packet_type == Packet.PACKET_TYPE_CON:
+        if self.packet_type == PacketType.CON:
             self.body = data[5:-1]
             self.crc = ord(data[-1])
 
@@ -82,12 +79,6 @@ class Packet(object):
         """flip_bytes inverts bytes"""
         bytes = map(lambda x: ord(x) ^ 0xff, data)
         return bytearray(bytes).__str__()
-
-    def packet_type_str(self):
-        if self.packet_type in Packet.PACKET_TYPE_STRINGS:
-            return Packet.PACKET_TYPE_STRINGS.get(self.packet_type)
-        else:
-            return format(self.packet_type, '#05b')[2:]
 
     def assign_from_string(self, line):
         try:
@@ -103,7 +94,7 @@ class Packet(object):
                 if key == "ID2":
                     self.pod_address_2 = v
                 if key == "PTYPE":
-                    self.packet_type = self.PACKET_TYPES.get(v)
+                    self.packet_type = PacketType[v]
                 if key == "SEQ":
                     self.sequence = int(v)
                 if key == "ID2":
@@ -130,12 +121,12 @@ class Packet(object):
 
     def tx_data(self):
         data = self.pod_address_1.decode('hex')
-        data += chr((self.packet_type << 5) + self.sequence)
-        if self.packet_type == self.PACKET_TYPE_CON:
+        data += chr((self.packet_type.value << 5) + self.sequence)
+        if self.packet_type == PacketType.CON:
             data += self.body
         else:
             data += self.pod_address_2.decode('hex')
-        if self.packet_type != self.PACKET_TYPE_CON and self.body is not None:
+        if self.packet_type != PacketType.CON and self.body is not None:
             data += chr(self.byte9)
             data += chr(self.body_len)
             data += self.body
@@ -180,19 +171,19 @@ class Packet(object):
 
         base_str += "ID1:%s PTYPE:%s SEQ:%02d" % (
                 self.pod_address_1,
-                self.packet_type_str(),
+                self.packet_type.name,
                 self.sequence,
             )
 
         crc = self.crc or self.computed_crc()
 
-        if self.packet_type == Packet.PACKET_TYPE_ACK:
+        if self.packet_type == PacketType.ACK:
             return "%s ID2:%s CRC:%02x" % (
                 base_str,
                 self.pod_address_2,
                 crc,
             )
-        if self.packet_type == Packet.PACKET_TYPE_CON:
+        if self.packet_type == PacketType.CON:
             return "%s CON:%s CRC:%02x" % (
                 base_str,
                 self.body.encode('hex'),
@@ -224,7 +215,7 @@ class Packet(object):
             obj = {
                 "pod_address_1": self.pod_address_1,
                 "packet_type": self.packet_type,
-                "packet_type_str": self.packet_type_str(),
+                "packet_type_str": self.packet_type.name,
                 "sequence": self.sequence,
                 "pod_address_2": self.pod_address_2,
                 "crc": self.crc,
@@ -247,9 +238,9 @@ class Packet(object):
     def is_valid(self):
         if self.packet_type is None:
             return False
-        if self.packet_type == self.PACKET_TYPE_CON:
+        if self.packet_type == PacketType.CON:
             body_ok = len(self.body) >= 1
-        elif self.packet_type == self.PACKET_TYPE_ACK:
+        elif self.packet_type == PacketType.ACK:
             body_ok = True
         else:
             if self.body is None:
