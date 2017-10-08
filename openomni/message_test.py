@@ -43,3 +43,7 @@ class MessageTestCase(unittest.TestCase):
         insulin_cmd = msg.commands()[0]
 
         self.assertTrue(isinstance(insulin_cmd, InsulinScheduleCommand))
+
+
+if __name__ == '__main__':
+    unittest.main()
