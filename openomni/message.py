@@ -1,5 +1,5 @@
 import crc16
-from packet import Packet
+from packet import Packet, PacketType
 from commands import COMMAND_TYPES, UnknownCommand
 
 
@@ -43,7 +43,7 @@ class Message(object):
             packet.pod_address_1 = self.pod_address
             packet.sequence = start_sequence + len(packets) * 2
             if len(packets) == 0:
-                packet.packet_type = Packet.PACKET_TYPE_PDM
+                packet.packet_type = PacketType.PDM
                 packet.pod_address_2 = self.pod_address
                 packet.byte9 = self.byte9
                 segment_len = min(Packet.MAX_BODY_SEGMENT_LEN,len(body_remaining))
@@ -51,7 +51,7 @@ class Message(object):
                 packet.body_len = len(self.body)
                 body_remaining = body_remaining[segment_len:]
             else:
-                packet.packet_type = Packet.PACKET_TYPE_CON
+                packet.packet_type = PacketType.CON
                 segment_len = min(Packet.MAX_CON_BODY_SEGMENT_LEN,len(body_remaining))
                 packet.body = body_remaining[:segment_len]
                 body_remaining = body_remaining[segment_len:]

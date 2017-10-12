@@ -12,7 +12,7 @@ import time
 import datetime
 import argparse
 import openomni.rf
-from openomni.packet import Packet
+from openomni.packet import Packet, PacketType
 from multiprocessing import Process, Queue, Event
 import logging
 import copy
@@ -44,10 +44,10 @@ def watch_packets(rfcatidx,
                               .format(x))
                     item = (rfcatidx, packet)
                     # TODO: check for relevance
-                    if packet.message_type == Packet.PACKET_TYPE_PDM:
+                    if packet.message_type == PacketType.PDM:
                         # just assume it's us for now
                         sawq.put(item)
-                    elif packet.message_type == Packet.PACKET_TYPE_POD:
+                    elif packet.message_type == PacketType.POD:
                         # holy shit!
                         responseq.put(item)
                 x += 1
@@ -180,7 +180,7 @@ def main(options=None):
     packet_tmpl = Packet()
     packet_tmpl.pod_address_1 = args.addr
     packet_tmpl.pod_address_2 = args.addr
-    packet_tmpl.packet_type = Packet.PACKET_TYPE_PDM
+    packet_tmpl.packet_type = PacketType.PDM
     packet_tmpl.sequence = args.seq
     packet_tmpl.byte9 = ord(args.byte9.decode('hex'))
     packet_tmpl.body = args.body
