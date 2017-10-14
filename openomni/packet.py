@@ -99,9 +99,10 @@ class Packet(object):
                 if self.received_at is None and i < 1:
                     try:
                         self.received_at = dateutil.parser.parse(elem)
+                        continue
                     except ValueError:
                         pass
-                (key,v) = elem.split(':')
+                (key,v) = elem.split(':', 1)
                 if key == "ID1":
                     self.pod_address_1 = v
                 if key == "ID2":
