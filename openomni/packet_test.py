@@ -37,8 +37,15 @@ class PacketTestCase(unittest.TestCase):
         self.assertEqual(packet.packet_type, PacketType.ACK)
         self.assertEqual(packet.raw_hex(), "1f01482a5e1f01482ae5")
 
+    def test_read_packet_legacy_output_format_no_date(self):
+        packet = Packet.from_string("ID1:1f014829 PTYPE:POD SEQ:14 ID2:1f014829 B9:24 BLEN:10 MTYPE:1d18 BODY:02ada800002be7ff021c CRC:40")
+        self.assertTrue(packet.is_valid())
+        self.assertEqual(packet.packet_type, PacketType.POD)
+        self.assertEqual(packet.body_len, 10)
+        self.assertEqual(len(packet.body), 12)  # Includes crc
+
     def test_read_packet_output_format(self):
-        packet = Packet().assign_from_string("2016-06-17T20:50:34.882742 ID1:1f014829 PTYPE:POD SEQ:14 ID2:1f014829 B9:24 BLEN:10 MTYPE:1d18 BODY:02ada800002be7ff021c CRC:40")
+        packet = Packet.from_string("2016-06-17T20:50:34.882742 ID1:1f014829 PTYPE:POD SEQ:14 ID2:1f014829 B9:24 BLEN:10 MTYPE:1d18 BODY:02ada800002be7ff021c CRC:40")
         self.assertTrue(packet.is_valid())
         self.assertEqual(packet.packet_type, PacketType.POD)
         self.assertEqual(packet.body_len, 10)
