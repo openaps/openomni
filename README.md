@@ -5,7 +5,7 @@ Documentation and python library for decoding omnipod communications. [Join the 
 
 ## Current Status
 
-We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki/RF-Modulation) and [packet/message encoding](https://github.com/openaps/openomni/wiki). We are now working on decoding meaning of the bytes in the body for each of the [Commands](https://github.com/openaps/openomni/wiki/Protocol-Commands).
+We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki/RF-Modulation) and [packet/message encoding](https://github.com/openaps/openomni/wiki). We are now working on decoding meaning of the bytes in the body for each of the [Message Types](https://github.com/openaps/openomni/wiki/Message-Types).
 
 ## Areas to focus on
 
