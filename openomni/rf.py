@@ -7,6 +7,7 @@ from rflib import (
     MOD_2FSK,
     SYNCM_CARRIER_16_of_16,
     MFMCFG1_NUM_PREAMBLE0,
+    MFMCFG1_NUM_PREAMBLE_2,
     MFMCFG1_NUM_PREAMBLE_8
 )
 
@@ -30,5 +31,5 @@ def disable_preamble(device):
 
 
 def enable_preamble(device):
-    device.setMdmNumPreamble(MFMCFG1_NUM_PREAMBLE_8)
+    device.setMdmNumPreamble(MFMCFG1_NUM_PREAMBLE_2)
     device.setMdmSyncWord(0x54c3)
