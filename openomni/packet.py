@@ -35,6 +35,7 @@ class Packet(object):
     MAX_CON_BODY_SEGMENT_LEN = 30
 
     def __init__(self, data=""):
+        self.data = data
         self.received_at = None
         self.packet_type = None
         self.body = None
@@ -70,9 +71,16 @@ class Packet(object):
             self.body = data[5:-1]
             self.crc = ord(data[-1])
 
-    @staticmethod
-    def from_hex(hex_str):
-        return Packet(hex_str.decode("hex"))
+    @classmethod
+    def from_hex(cls, hex_str):
+        return cls(hex_str.decode("hex"))
+
+    @classmethod
+    def from_string(cls, raw_string):
+        c = cls()
+        c.assign_from_string(raw_string)
+        c.data = c.tx_data()
+        return c
 
     @staticmethod
     def flip_bytes(data):
@@ -85,9 +93,14 @@ class Packet(object):
             elems = line.split(' ')
             self.pod_address_2 = None
             self.byte9 = None
-            self.received_at = dateutil.parser.parse(elems[0])
+            self.received_at = None
             legacy_mtype = bytes()
-            for elem in elems[1:]:
+            for i, elem in enumerate(elems):
+                if self.received_at is None and i < 1:
+                    try:
+                        self.received_at = dateutil.parser.parse(elem)
+                    except ValueError:
+                        pass
                 (key,v) = elem.split(':')
                 if key == "ID1":
                     self.pod_address_1 = v
@@ -111,11 +124,8 @@ class Packet(object):
                     legacy_mtype = v.decode('hex')
                 if key == "BODY":
                     self.body = legacy_mtype + v.decode('hex')
-        except ValueError:
+        except (ValueError, OverflowError):
             self.body = None
-        except OverflowError:
-            self.body = None
-
         return self
 
 
