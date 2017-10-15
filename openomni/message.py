@@ -11,7 +11,7 @@ class Message(object):
         self.body = body
 
     def data_for_crc(self):
-        data = self.pod_address.decode('hex')
+        data = self.pod_address.decode("hex")
         data += chr(self.byte9)
         data += chr(len(self.body))
         data += self.body
