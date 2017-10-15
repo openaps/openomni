@@ -1,6 +1,7 @@
+import copy
 import crc16
 from packet import Packet, PacketType
-from commands import COMMAND_TYPES, UnknownCommand
+from commands import ParseCommand
 
 
 class Message(object):
@@ -24,15 +25,11 @@ class Message(object):
         return chr(crc >> 8) + chr(crc & 0xff)
 
     def commands(self):
-        cmd_idx = 0
+        body = copy.copy(self.body)
         cmds = []
-        while cmd_idx < len(self.body)-1:
-            cmd_type = ord(self.body[cmd_idx])
-            cmd_len = ord(self.body[cmd_idx+1])
-            cmd_class = COMMAND_TYPES.get(cmd_type, UnknownCommand)
-            cmds.append(cmd_class(self.body[cmd_idx+2:cmd_idx+2+cmd_len], cmd_type))
-            cmd_idx += cmd_len + 2
-
+        while body:
+            cmd, body = ParseCommand(body)
+            cmds.append(cmd)
         return cmds
 
     def packetize(self, start_sequence):

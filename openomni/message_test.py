@@ -54,6 +54,12 @@ class MessageTestCase(unittest.TestCase):
         self.assertTrue(isinstance(status_cmd, PodStatusResponse))
         self.assertIn("time", str(status_cmd))
 
+    def test_two_commands_message(self):
+        body = "1a0e9891474a01008101384000040004".decode('hex')
+        body += "1d18002640000000abff835bb5".decode('hex')
+        msg = Message("1f01482a", 0x14, body)
+        self.assertEqual(2, len(msg.commands()))
+
 
 if __name__ == '__main__':
     unittest.main()

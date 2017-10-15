@@ -9,8 +9,9 @@ class _BaseCommand(object):
     # The command ID this class handles
     COMMAND_ID = None
 
-    def __init__(self, data, command_id=None):
+    def __init__(self, data, command_id=None, command_length=None):
         self.command_id = command_id
+        self.command_length = command_length
         self.data = data
         try:
             self.Populate()
@@ -96,11 +97,11 @@ class Message01Response(_BaseCommand):
             self.pod_address = self.data[23:27].encode('hex')
         elif self.command_length == 0x15:
             self.hardcode_bytes = self.data[:7].encode('hex')
-            self.state_byte = self.data[8].encode('hex')
-            self.lot = self.data[9:13].encode('hex')
-            self.tid = self.data[13:17].encode('hex')
-            self.rssi = self.data[18].encode('hex')
-            self.pod_address = self.data[19:22].encode('hex')
+            self.state_byte = self.data[7].encode('hex')
+            self.lot = self.data[8:12].encode('hex')
+            self.tid = self.data[12:16].encode('hex')
+            self.rssi = self.data[16].encode('hex')
+            self.pod_address = self.data[17:22].encode('hex')
 
     def debug_detail(self):
         if self.command_length == 0x1b:
@@ -120,3 +121,19 @@ for cls in globals().values():
 	    raise Exception('%s is handled by more than one class! %s and %s'
 			    % (cls.COMMAND_ID, cls, COMMAND_TYPES[command_id]))
 	COMMAND_TYPES[cls.COMMAND_ID] = cls
+
+
+def ParseCommand(body):
+    """Parse a command out of a message body.
+
+    Args:
+       body: message body
+
+    Returns:
+       (command instance, remainder of the message body)
+    """
+    cmd_type = ord(body[0])
+    cmd_len = ord(body[1])
+    cmd_class = COMMAND_TYPES.get(cmd_type, UnknownCommand)
+    instance = cmd_class(body[2:2+cmd_len], cmd_type, cmd_len)
+    return (instance, body[2+cmd_len:])
