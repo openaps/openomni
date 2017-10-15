@@ -30,7 +30,7 @@ def main(argv):
 
     # print("Nonces = %s", nonces)
     # for nonce in nonces:
-    #     print 'Nonce: %08x' % nonce
+    #     print "Nonce: %08x" % nonce
 
     nonce = nonces[last_nonce_idx + 1]
     print "Next nonce = %08x" % nonce
