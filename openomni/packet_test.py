@@ -51,6 +51,9 @@ class PacketTestCase(unittest.TestCase):
         self.assertEqual(packet.body_len, 10)
         self.assertEqual(len(packet.body), 12)  # Includes crc
         self.assertEqual(str(packet), "2016-06-17T20:50:34.882742 ID1:1f014829 PTYPE:POD SEQ:14 ID2:1f014829 B9:24 BLEN:10 BODY:1d1802ada800002be7ff021c CRC:40")
+    def test_bad_packet_type(self):
+        packet = Packet("1f0148296e1f014829240a1d1802ada800002be7ff021c56".decode("hex"))
+        self.assertEqual(packet.packet_type, None)
 
 
 if __name__ == '__main__':
