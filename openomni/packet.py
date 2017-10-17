@@ -47,7 +47,11 @@ class Packet(object):
         self.pod_address_1 = data[0:4].encode("hex")
         byte5 = ord(data[4])
 
-        self.packet_type = PacketType(byte5 >> 5)
+        try:
+            self.packet_type = PacketType(byte5 >> 5)
+        except ValueError:
+            print("Bad Packet Type! (%s)" % data.encode('hex'))
+            return
 
         self.sequence = byte5 & 0b11111
 
