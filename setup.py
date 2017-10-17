@@ -28,5 +28,6 @@ setup(name='openomni',
       packages=find_packages(),
       install_requires=[
           'crccheck',
+          'enum34;python_version<"3.4"',
       ],
       zip_safe=False)
