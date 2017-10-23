@@ -13,7 +13,6 @@ def main(options=None):
     parser = argparse.ArgumentParser(description="Print out structured version of packet (given as a hex string).")
     parser.add_argument("--infile", type=argparse.FileType("r"),
             help="Input text-formatted file.")
-    parser.add_argument("data", metavar="data", type=str, nargs="?",
     parser.add_argument("data", metavar="data", type=str, nargs="*",
                         help="data as a hex string")
     parser.add_argument("--json", action="store_true",
