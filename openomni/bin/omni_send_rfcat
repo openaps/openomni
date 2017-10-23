@@ -96,12 +96,8 @@ def main(options=None):
     last_seq = int(args.last_seq)
 
     last_seq = int(last_seq)
-    byte9 = last_b9 + 4
-    if byte9 >= 0x40:
-        byte9 -= 0x40
-    seq = last_seq + 1
-    if seq >= 32:
-        seq -= 32
+    byte9 = (((last_b9 >> 2) + 1) & 0b1111) << 2
+    seq = (last_seq + 1) & 0b11111
 
     send_message(d, pod_id=args.pod_id, seq=seq, byte9=byte9,
                 body_hex=args.body)
