@@ -17,7 +17,7 @@ class _BaseCommand(object):
             self.Populate()
         except NotImplementedError:
             pass
-    
+
     def Populate(self):
         """Assembles this packet from self.data."""
         raise NotImplementedError
@@ -71,6 +71,7 @@ class PodStatusResponse(_BaseCommand):
 
     def Populate(self):
         self.minutes_active = ((ord(self.data[5]) & 0x0f) << 6) + (ord(self.data[6]) >> 2)
+        self.reservoir_level = round((float((((ord(self.data[6]) & 0x03) << 6) + (ord(self.data[7]) >> 2)))*50)/255, 0)
 
     def debug_detail(self):
         return "active_time=%s" % (datetime.timedelta(minutes=self.minutes_active))

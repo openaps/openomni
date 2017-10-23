@@ -14,6 +14,12 @@ class CommandsTestCase(unittest.TestCase):
         cmd, _ = commands.ParseCommand("1f05156b93e8620028".decode("hex"))
         self.assertTrue(isinstance(cmd, commands.CancelCommand))
 
+    def test_parse_1d_response(self):
+        resp, _ = commands.ParseCommand("1d18003e980000421fff81cf".decode("hex"))
+        self.assertTrue(isinstance(resp, commands.PodStatusResponse))
+        self.assertEqual(resp.minutes_active, 135)
+        self.assertEqual(resp.reservoir_level, 50.0)
+
     def test_parse_01_response(self):
         """Test 0x01 command parsing.
         Values from https://github.com/openaps/openomni/wiki/Response-01
