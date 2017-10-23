@@ -54,6 +54,7 @@ class PacketTestCase(unittest.TestCase):
     def test_bad_packet_type(self):
         packet = Packet("1f0148296e1f014829240a1d1802ada800002be7ff021c56".decode("hex"))
         self.assertEqual(packet.packet_type, None)
+        self.assertFalse(packet.is_valid())
 
 
 if __name__ == '__main__':
