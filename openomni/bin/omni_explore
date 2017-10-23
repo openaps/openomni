@@ -55,17 +55,17 @@ def quick_setup(device, bitrate, flood):
     while not keystop():
         try:
             pkt, ts = device.RFrecv()
-            print("Received: %s" % flip_bytes(pkt.encode('hex')))
+            print("Received: %s" % flip_bytes(pkt.encode("hex")))
 
         except ChipconUsbTimeoutException:
             time.sleep(0.5)
 
     sys.stdin.read(1)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Explore omni communications with rfcat...")
-    parser.add_argument('--bitrate', '-b', help="Bitrate in kbps", dest='bitrate', type=int)
-    parser.add_argument('--flood', '-f', help="Disable preamble quality threshold and sync word", dest='flood', action='store_true')
+    parser.add_argument("--bitrate", "-b", help="Bitrate in kbps", dest="bitrate", type=int)
+    parser.add_argument("--flood", "-f", help="Disable preamble quality threshold and sync word", dest="flood", action="store_true")
     parser.set_defaults(bitrate=40625)
     parser.set_defaults(flood=False)
     args = parser.parse_args()

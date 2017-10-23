@@ -14,6 +14,7 @@ def main(options=None):
     parser.add_argument("--infile", type=argparse.FileType("r"),
             help="Input text-formatted file.")
     parser.add_argument("data", metavar="data", type=str, nargs="?",
+    parser.add_argument("data", metavar="data", type=str, nargs="*",
                         help="data as a hex string")
     parser.add_argument("--json", action="store_true",
                         help="print as json (default: text line)")

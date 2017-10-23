@@ -16,12 +16,12 @@ import sys
 
 def main(options=None):
 
-    parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
-    parser.add_argument('--json', action='store_true',
-                        help='print as json (default: text line)')
+    parser = argparse.ArgumentParser(description="Capture omnipod packets using rfcat.")
+    parser.add_argument("--json", action="store_true",
+                        help="print as json (default: text line)")
 
-    parser.add_argument('--raw', action='store_true',
-                        help='print raw packet')
+    parser.add_argument("--raw", action="store_true",
+                        help="print raw packet")
 
     args = parser.parse_args()
 
@@ -41,9 +41,9 @@ def main(options=None):
                 packet = Packet(data)
                 packet.received_at = rcv_time
                 if packet.is_valid():
-                    #print(data.encode('hex'))
+                    #print(data.encode("hex"))
                     if args.raw:
-                        print(packet.data.encode('hex'))
+                        print(packet.data.encode("hex"))
                     if json:
                         print(packet.as_json())
                     else:
@@ -56,5 +56,5 @@ def main(options=None):
 
     sys.stdin.read(1)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
