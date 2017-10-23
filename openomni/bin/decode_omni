@@ -11,22 +11,32 @@ from openomni.packet import Packet
 
 def main(options=None):
     parser = argparse.ArgumentParser(description="Print out structured version of packet (given as a hex string).")
-    parser.add_argument("data", metavar="data", type=str, nargs="+",
+    parser.add_argument("--infile", type=argparse.FileType("r"),
+            help="Input text-formatted file.")
+    parser.add_argument("data", metavar="data", type=str, nargs="*",
                         help="data as a hex string")
     parser.add_argument("--json", action="store_true",
                         help="print as json (default: text line)")
 
     args = parser.parse_args()
-    packet = Packet.from_hex(args.data[0])
 
-    if packet.is_valid():
-        if args.json:
-            print(packet.as_json())
-        else:
-            # compact style:
-            print(packet)
+    if args.infile:
+        packets = [Packet.from_string(l) for l in args.infile]
+    elif args.data:
+        packets = [Packet.from_hex(a) for x in args.data]
     else:
-        print("Invalid packet")
+        print("Need either --infile or hex data args.")
+        return
+
+    for packet in packets:
+        if packet.is_valid():
+            if args.json:
+                print(packet.as_json())
+            else:
+                # compact style:
+                print(packet)
+        else:
+            print("Invalid packet")
 
 if __name__ == "__main__":
     main()
