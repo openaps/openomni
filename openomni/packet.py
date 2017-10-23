@@ -35,6 +35,7 @@ class Packet(object):
     MAX_CON_BODY_SEGMENT_LEN = 30
 
     def __init__(self, data=""):
+        self.data = data
         self.received_at = None
         self.packet_type = None
         self.body = None
@@ -70,9 +71,16 @@ class Packet(object):
             self.body = data[5:-1]
             self.crc = ord(data[-1])
 
-    @staticmethod
-    def from_hex(hex_str):
-        return Packet(hex_str.decode("hex"))
+    @classmethod
+    def from_hex(cls, hex_str):
+        return cls(hex_str.decode("hex"))
+
+    @classmethod
+    def from_string(cls, raw_string):
+        c = cls()
+        c.assign_from_string(raw_string)
+        c.data = c.tx_data()
+        return c
 
     @staticmethod
     def flip_bytes(data):
@@ -82,13 +90,19 @@ class Packet(object):
 
     def assign_from_string(self, line):
         try:
-            elems = line.split(' ')
+            elems = line.split(" ")
             self.pod_address_2 = None
             self.byte9 = None
-            self.received_at = dateutil.parser.parse(elems[0])
+            self.received_at = None
             legacy_mtype = bytes()
-            for elem in elems[1:]:
-                (key,v) = elem.split(':')
+            for i, elem in enumerate(elems):
+                if self.received_at is None and i < 1:
+                    try:
+                        self.received_at = dateutil.parser.parse(elem)
+                        continue
+                    except ValueError:
+                        pass
+                (key,v) = elem.split(":", 1)
                 if key == "ID1":
                     self.pod_address_1 = v
                 if key == "ID2":
@@ -102,30 +116,27 @@ class Packet(object):
                 if key == "CRC":
                     self.crc = int(v,16)
                 if key == "CON":
-                    self.body = v.decode('hex')
+                    self.body = v.decode("hex")
                 if key == "B9":
                     self.byte9 = int(v,16)
                 if key == "BLEN":
                     self.body_len = int(v)
                 if key == "MTYPE":  # Legacy format
-                    legacy_mtype = v.decode('hex')
+                    legacy_mtype = v.decode("hex")
                 if key == "BODY":
-                    self.body = legacy_mtype + v.decode('hex')
-        except ValueError:
+                    self.body = legacy_mtype + v.decode("hex")
+        except (ValueError, OverflowError):
             self.body = None
-        except OverflowError:
-            self.body = None
-
         return self
 
 
     def tx_data(self):
-        data = self.pod_address_1.decode('hex')
+        data = self.pod_address_1.decode("hex")
         data += chr((self.packet_type.value << 5) + self.sequence)
         if self.packet_type == PacketType.CON:
             data += self.body
         else:
-            data += self.pod_address_2.decode('hex')
+            data += self.pod_address_2.decode("hex")
         if self.packet_type != PacketType.CON and self.body is not None:
             data += chr(self.byte9)
             data += chr(self.body_len)
@@ -186,7 +197,7 @@ class Packet(object):
         if self.packet_type == PacketType.CON:
             return "%s CON:%s CRC:%02x" % (
                 base_str,
-                self.body.encode('hex'),
+                self.body.encode("hex"),
                 crc,
             )
         if self.body != None:
@@ -196,7 +207,7 @@ class Packet(object):
                 self.pod_address_2,
                 self.byte9,
                 self.body_len,
-                self.body.encode('hex'),
+                self.body.encode("hex"),
                 crc,
             )
         else:
@@ -208,7 +219,7 @@ class Packet(object):
             )
 
     def raw_hex(self):
-        return self.tx_data().encode('hex')
+        return self.tx_data().encode("hex")
 
     def as_dict(self):
         if self.is_valid():
@@ -224,7 +235,7 @@ class Packet(object):
             if self.byte9 is not None:
                 obj["byte9"] = self.byte9
             if self.body is not None:
-                obj["body"] = self.body.encode('hex')
+                obj["body"] = self.body.encode("hex")
                 obj["body_len"] = self.body_len
             if self.received_at is not None:
                 obj["received_at"] = self.received_at
@@ -233,7 +244,7 @@ class Packet(object):
         return obj
 
     def as_json(self):
-        return json.dumps(self.as_dict(), default=json_serial, sort_keys=True, indent=4, separators=(',', ': '))
+        return json.dumps(self.as_dict(), default=json_serial, sort_keys=True, indent=4, separators=(",", ": "))
 
     def is_valid(self):
         if self.packet_type is None:

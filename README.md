@@ -5,13 +5,13 @@ Documentation and python library for decoding omnipod communications. [Join the 
 
 ## Current Status
 
-We have figured out the RF modulation. See the [RF Modulation wiki page](https://github.com/openaps/openomni/wiki/RF-Modulation) for more details and tools.  We have also figured out [packet structure](https://github.com/openaps/openomni/tree/master/packets), including the packet CRC and message CRC(!) We are now working on decoding meaning of the bytes in the body for each of the [Commands](https://github.com/openaps/openomni/wiki/Protocol-Commands).
+We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki/RF-Modulation) and [packet/message encoding](https://github.com/openaps/openomni/wiki). We are now working on decoding meaning of the bytes in the body for each of the [Message Types](https://github.com/openaps/openomni/wiki/Message-Types).
 
 ## Areas to focus on
 
 There are two ways we could use help, beyond trying to crack the two byte crc at the end of messages (though if you want to tackle that, please do!):
-  1. Capture data from different pods and commands using omni_listen_rfcat. If you can document what was being done with the PDM while the packets were recorded, that would be a plus, but raw data can be helpful too.  Submit these as gists or post them to #shared-files in the Slack channel.
-  2. Start decoding fields for individual commands.  Even without knowing how to generate the CRC, the raw data for commands and responses is clear, so it is possible to start decoding which bytes mean what.  A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
+  1. Capture data from different pods and commands using omni_listen_rfcat. If you can document what was being done with the PDM while the packets were recorded, that would be a plus, but raw data can be helpful too.  Submit these as new wiki pages and add your new page to the [Packet Captures](https://github.com/openaps/openomni/wiki/Packet-Captures) page.
+  2. Start decoding fields for individual commands. A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
 
 ## What you'll need
 
@@ -23,7 +23,7 @@ One of the following.  If you use the TI stick, you will need to flash firmware 
 ## Installation
 
 Prerequisites:
-* python 2.7
+* python 2.7 (already installed on MacOS)
 * [pip](https://pip.readthedocs.io/en/stable/installing/)
 * [rfcat](https://github.com/atlas0fd00m/rfcat)
 * PyUSB - you can install this with pip: `pip install pyusb`, or `sudo pip install pyusb`
