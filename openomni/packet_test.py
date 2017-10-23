@@ -52,6 +52,10 @@ class PacketTestCase(unittest.TestCase):
         self.assertEqual(len(packet.body), 12)  # Includes crc
         self.assertEqual(str(packet), "2016-06-17T20:50:34.882742 ID1:1f014829 PTYPE:POD SEQ:14 ID2:1f014829 B9:24 BLEN:10 BODY:1d1802ada800002be7ff021c CRC:40")
 
+    def test_read_long_packet_from_output_format(self):
+        packet = Packet().assign_from_string("20:58:16.322496 ID1:1f01482a PTYPE:PDM SEQ:29 ID2:1f01482a B9:14 BLEN:32 BODY:1a0eeb0f79dd0100c202384000181018160e000001e6007107 CRC:ec")
+        self.assertTrue(packet.is_valid())
+        self.assertEqual(packet.raw_hex(), "1f01482abd1f01482a14201a0eeb0f79dd0100c202384000181018160e000001e6007107ec")
 
 if __name__ == "__main__":
     unittest.main()

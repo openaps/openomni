@@ -28,7 +28,10 @@ def send_packet(device, packet):
     openomni.rf.disable_preamble(device)
 
     # Send data
-    device.RFxmit(Packet.flip_bytes(full_data))
+    #print("Raw data: %s" % full_data.encode('hex'))
+    outgoing_data = Packet.flip_bytes(full_data)
+    #print("outgoing data: %s" % outgoing_data.encode('hex'))
+    device.RFxmit(outgoing_data)
 
     # Restore modem preamble and syncword
     openomni.rf.enable_preamble(device)
@@ -38,9 +41,9 @@ def send_message(device, pod_id, seq, byte9, body_hex):
     body = body_hex.decode("hex")
     msg = Message(pod_id, byte9, body)
     for packet in msg.packetize(seq):
+        #print("%s" % packet)
         send_packet(device, packet)
         packet.received_at = datetime.datetime.now()
-        print("%s" % packet)
         packet = recv_message(device)
         print("%s" % packet)
 
@@ -80,8 +83,8 @@ def main(options=None):
 
     parser = argparse.ArgumentParser(description="Send status packet to POD using rfcat.")
     parser.add_argument("pod_id", help="the pod id", type=str)
-    parser.add_argument("seq", help="sequence number of the packet you wish to craft", type=int)
-    parser.add_argument("byte9", help="byte9 value in hexadecimal", type=str)
+    parser.add_argument("last_seq", help="last sequence number used in comms", type=int)
+    parser.add_argument("last_b9", help="last byte9 values used in comms (in hexadecimal)", type=str)
     parser.add_argument("body", help="body of packet in hexadecimal", type=str)
 
     args = parser.parse_args()
@@ -89,12 +92,12 @@ def main(options=None):
     d = RfCat(0, debug=False)
     openomni.rf.configure_rfcat(d)
 
-    byte9 = ord(args.byte9.decode("hex"))
-    seq = int(args.seq)
+    last_b9 = int(args.last_b9, 16)
+    last_seq = int(args.last_seq)
 
-    # 1a0e 3f63a4f7 0100d3013840012c012c160e7c000bb8000927c00bb8000927c0
-    # 1a0e 1b8746cc 0100d3013840012c012c160e7c000bb8000927c00bb8000927c0
-    # 1a0e 4f64a5fa 0100d3013840012c012c160e7c000bb8000927c00bb8000927c0
+    last_seq = int(last_seq)
+    byte9 = (((last_b9 >> 2) + 1) & 0b1111) << 2
+    seq = (last_seq + 1) & 0b11111
 
     send_message(d, pod_id=args.pod_id, seq=seq, byte9=byte9,
                 body_hex=args.body)
@@ -103,7 +106,7 @@ def main(options=None):
     print(packet)
 
     if packet.packet_type == PacketType.POD:
-        send_ack(d, args.pod_id, int(args.seq) + 2)
+        send_ack(d, args.pod_id, seq + 2)
     else:
         print("Missed response")
 
