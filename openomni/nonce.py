@@ -20,7 +20,7 @@ def generate_nonces(lot, tid, count):
 
   for i in range(count):
     nonce = a7[2 + byte_F9]
-    #print 'Nonce: %08x' % nonce
+    #print "Nonce: %08x" % nonce
     a7[2 + byte_F9] = generate_entry()
     byte_F9 = nonce & 0xf
     nonces.append(nonce)
@@ -28,8 +28,8 @@ def generate_nonces(lot, tid, count):
   return nonces
 
 # for lot, tid in [[41847, 240439], [42560, 621607], [42560, 661771]]:
-#   print 'Lot: %d, TID: %d' % (lot, tid)
+#   print "Lot: %d, TID: %d" % (lot, tid)
 #   nonces = generate_nonces(lot, tid, 15)
 #   for nonce in nonces:
-#     print 'Nonce: %08x' % nonce
+#     print "Nonce: %08x" % nonce
 #   print

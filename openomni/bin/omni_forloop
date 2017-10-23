@@ -24,13 +24,13 @@ def watch_packets(rfcatidx,
                   sawq,
                   responseq,
                   rfcatdebug=False):
-    log = logging.getLogger('sniff_packets@{}'.format(rfcatidx))
-    log.debug('opening device')
+    log = logging.getLogger("sniff_packets@{}".format(rfcatidx))
+    log.debug("opening device")
     # will spin forever without a device
     device = RfCat(rfcatidx, debug=rfcatdebug)
-    log.debug('configuring device')
+    log.debug("configuring device")
     openomni.rf.configure_rfcat(device)
-    log.info('device configured, capturing packets')
+    log.info("device configured, capturing packets")
     while True:
         try:
             pkt, ts = device.RFrecv(timeout=80000)
@@ -72,10 +72,10 @@ def spew_packets(rfcatidx,
             timeout
             rfcatdebug - for spaaaam
     """
-    log = logging.getLogger('spew_packets@{}'.format(rfcatidx))
-    log.debug('opening device')
+    log = logging.getLogger("spew_packets@{}".format(rfcatidx))
+    log.debug("opening device")
     device = RfCat(rfcatidx, debug=rfcatdebug)
-    log.debug('configuring device')
+    log.debug("configuring device")
     openomni.rf.configure_rfcat(device)
     # transmitting uses its own syncword
     openomni.rf.disable_preamble(device)
@@ -85,7 +85,7 @@ def spew_packets(rfcatidx,
     # preamble bytes
     preamble_length = 235   # 324 is full amount, but rfcat errors if total length is > 255
     sync_word = "3c"
-    packet_prefix = (("ab" * preamble_length) + sync_word).decode('hex')
+    packet_prefix = (("ab" * preamble_length) + sync_word).decode("hex")
 
     while spew.wait():
         attempt = 0
@@ -127,44 +127,44 @@ def spew_packets(rfcatidx,
 
 
 def main(options=None):
-    parser = argparse.ArgumentParser(description='Omnipod status checker')
-    parser.add_argument('--debug',
-                        action='store_true',
-                        help='enable debug messages')
-    parser.add_argument('--rfcatdebug',
-                        action='store_true',
-                        help='enable spammy rfcat debug messages')
-    parser.add_argument('--recvidx',
+    parser = argparse.ArgumentParser(description="Omnipod status checker")
+    parser.add_argument("--debug",
+                        action="store_true",
+                        help="enable debug messages")
+    parser.add_argument("--rfcatdebug",
+                        action="store_true",
+                        help="enable spammy rfcat debug messages")
+    parser.add_argument("--recvidx",
                         type=int,
                         default=0,
-                        help='device index of the recieving radio (default 0)')
-    parser.add_argument('--sendidx',
-                        '--xmitidx',
+                        help="device index of the recieving radio (default 0)")
+    parser.add_argument("--sendidx",
+                        "--xmitidx",
                         type=int,
                         default=1,
-                        help='device index of the sending radio (default 1)')
-    parser.add_argument('--addr',
-                        help='the pod id (default 13371337)',
+                        help="device index of the sending radio (default 1)")
+    parser.add_argument("--addr",
+                        help="the pod id (default 13371337)",
                         type=str,
-                        default='13371337')
-    parser.add_argument('--seq',
-                        help='starting sequence number (default 0)',
+                        default="13371337")
+    parser.add_argument("--seq",
+                        help="starting sequence number (default 0)",
                         type=int,
                         default=0)
-    parser.add_argument('--byte9',
-                        help='byte9 value in hex (default ff)',
+    parser.add_argument("--byte9",
+                        help="byte9 value in hex (default ff)",
                         type=str,
-                        default='ff')
-    parser.add_argument('--body',
-                        help='body of packet in hexadecimal (default 0000ce)',
+                        default="ff")
+    parser.add_argument("--body",
+                        help="body of packet in hexadecimal (default 0000ce)",
                         type=str,
-                        default='0000ce')
-    parser.add_argument('--timeout',
-                        help='RF timeout in float-seconds (default 1.0)',
+                        default="0000ce")
+    parser.add_argument("--timeout",
+                        help="RF timeout in float-seconds (default 1.0)",
                         type=float,
                         default=1.0)
-    parser.add_argument('--message-type',
-                        help='message type value in hex (default 0e01)',
+    parser.add_argument("--message-type",
+                        help="message type value in hex (default 0e01)",
                         type=str,
                         default="0e01")
 
@@ -182,10 +182,10 @@ def main(options=None):
     packet_tmpl.pod_address_2 = args.addr
     packet_tmpl.packet_type = PacketType.PDM
     packet_tmpl.sequence = args.seq
-    packet_tmpl.byte9 = ord(args.byte9.decode('hex'))
+    packet_tmpl.byte9 = ord(args.byte9.decode("hex"))
     packet_tmpl.body = args.body
     packet_tmpl.body_len = len(args.body)
-    packet_tmpl.message_type = args.message_type.decode('hex')
+    packet_tmpl.message_type = args.message_type.decode("hex")
 
     sawq = Queue()
     responseq = Queue()
@@ -231,5 +231,5 @@ def main(options=None):
         terminate()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

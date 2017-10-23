@@ -21,13 +21,13 @@ import atexit
 
 
 def sniff_packets(rfcatidx, pktq, rfcatdebug=False):
-    log = logging.getLogger('sniff_packets@{}'.format(rfcatidx))
-    log.debug('opening device')
+    log = logging.getLogger("sniff_packets@{}".format(rfcatidx))
+    log.debug("opening device")
     # will spin forever without a device
     device = RfCat(rfcatidx, debug=rfcatdebug)
-    log.debug('configuring device')
+    log.debug("configuring device")
     openomni.rf.configure_rfcat(device)
-    log.info('device configured, capturing packets')
+    log.info("device configured, capturing packets")
     while True:
         try:
             pkt, ts = device.RFrecv(timeout=80000)
@@ -55,17 +55,17 @@ def sniff_packets(rfcatidx, pktq, rfcatdebug=False):
 
 
 def main(options=None):
-    parser = argparse.ArgumentParser(description='Capture omnipod packets using rfcat.')
-    parser.add_argument('--json', action='store_true',
-                        help='print as json (default: text line)')
+    parser = argparse.ArgumentParser(description="Capture omnipod packets using rfcat.")
+    parser.add_argument("--json", action="store_true",
+                        help="print as json (default: text line)")
 
-    parser.add_argument('--raw', action='store_true',
-                        help='print raw packet')
-    parser.add_argument('--debug', action='store_true',
-                        help='enable debug messages')
-    parser.add_argument('--rfcatdebug', action='store_true',
-                        help='enable spammy rfcat debug messages')
-    parser.add_argument('ndevices', type=int, help='number of radios')
+    parser.add_argument("--raw", action="store_true",
+                        help="print raw packet")
+    parser.add_argument("--debug", action="store_true",
+                        help="enable debug messages")
+    parser.add_argument("--rfcatdebug", action="store_true",
+                        help="enable spammy rfcat debug messages")
+    parser.add_argument("ndevices", type=int, help="number of radios")
 
     args = parser.parse_args()
 
@@ -122,7 +122,7 @@ def main(options=None):
             if type(obj) is Packet:
                 packet = obj
                 if args.raw:
-                    print("{} -> [{}]".format(idx, packet.data.encode('hex')))
+                    print("{} -> [{}]".format(idx, packet.data.encode("hex")))
                 elif args.json:
                     # don't print the index because precious json
                     print(packet.as_json())
@@ -146,5 +146,5 @@ def main(options=None):
         print("Terminating...")
         worker_stop()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

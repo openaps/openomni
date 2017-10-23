@@ -21,7 +21,7 @@ def send_packet(device, packet):
     # Prepend preamble bytes
     preamble_length = 235   # 324 is full amount, but rfcat errors if total length is > 255
     sync_word = "3c"
-    packet_prefix = (("ab" * preamble_length) + sync_word).decode('hex')
+    packet_prefix = (("ab" * preamble_length) + sync_word).decode("hex")
     full_data = packet_prefix + packet.tx_data()
 
     # Turn off modem preamble and syncword since we are doing our own
@@ -35,7 +35,7 @@ def send_packet(device, packet):
 
 def send_message(device, pod_id, seq, byte9, body_hex):
 
-    body = body_hex.decode('hex')
+    body = body_hex.decode("hex")
     msg = Message(pod_id, byte9, body)
     for packet in msg.packetize(seq):
         send_packet(device, packet)
@@ -66,7 +66,7 @@ def recv_message(d):
                 packet = Packet(pkt[:len(pkt) - (x + 1)])
                 packet.received_at = rcv_time
                 if packet.is_valid():
-                    # print packet.data.encode('hex')
+                    # print packet.data.encode("hex")
                     return packet
                 x += 1
 
@@ -78,18 +78,18 @@ def recv_message(d):
 
 def main(options=None):
 
-    parser = argparse.ArgumentParser(description='Send status packet to POD using rfcat.')
-    parser.add_argument('pod_id', help='the pod id', type=str)
-    parser.add_argument('seq', help='sequence number of the packet you wish to craft', type=int)
-    parser.add_argument('byte9', help='byte9 value in hexadecimal', type=str)
-    parser.add_argument('body', help='body of packet in hexadecimal', type=str)
+    parser = argparse.ArgumentParser(description="Send status packet to POD using rfcat.")
+    parser.add_argument("pod_id", help="the pod id", type=str)
+    parser.add_argument("seq", help="sequence number of the packet you wish to craft", type=int)
+    parser.add_argument("byte9", help="byte9 value in hexadecimal", type=str)
+    parser.add_argument("body", help="body of packet in hexadecimal", type=str)
 
     args = parser.parse_args()
 
     d = RfCat(0, debug=False)
     openomni.rf.configure_rfcat(d)
 
-    byte9 = ord(args.byte9.decode('hex'))
+    byte9 = ord(args.byte9.decode("hex"))
     seq = int(args.seq)
 
     # 1a0e 3f63a4f7 0100d3013840012c012c160e7c000bb8000927c00bb8000927c0
@@ -111,5 +111,5 @@ def main(options=None):
 
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
