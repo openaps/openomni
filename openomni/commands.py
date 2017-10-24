@@ -14,11 +14,11 @@ class _BaseCommand(object):
         self.command_length = command_length
         self.data = data
         try:
-            self.Populate()
+            self.populate()
         except NotImplementedError:
             pass
-    
-    def Populate(self):
+
+    def populate(self):
         """Assembles this packet from self.data."""
         raise NotImplementedError
 
@@ -49,7 +49,7 @@ class InsulinScheduleCommand(_BaseCommand):
         TEMP_RATE = 1
         BOLUS = 2
 
-    def Populate(self):
+    def populate(self):
         self.nonce = self.data[0:4].encode("hex")
         self.table_num = ord(self.data[4])
         self.checksum = (ord(self.data[5]) << 8) + ord(self.data[6])
@@ -69,11 +69,12 @@ class PodStatusResponse(_BaseCommand):
 
     COMMAND_ID = 0x1d
 
-    def Populate(self):
+    def populate(self):
         self.minutes_active = ((ord(self.data[5]) & 0x0f) << 6) + (ord(self.data[6]) >> 2)
+        self.reservoir_level = round((float((((ord(self.data[6]) & 0x03) << 6) + (ord(self.data[7]) >> 2)))*50)/255, 0)
 
     def debug_detail(self):
-        return "active_time=%s" % (datetime.timedelta(minutes=self.minutes_active))
+        return "active_time=%s,reservoir_level=%sU" % (datetime.timedelta(minutes=self.minutes_active),self.reservoir_level)
 
 
 class CancelCommand(_BaseCommand):
@@ -86,7 +87,7 @@ class Message01Response(_BaseCommand):
 
     COMMAND_ID = 0x01
 
-    def Populate(self):
+    def populate(self):
         print len(self.data)
         print self.data.encode("hex")
         if self.command_length == 0x1b:
@@ -123,7 +124,7 @@ for cls in globals().values():
 	COMMAND_TYPES[cls.COMMAND_ID] = cls
 
 
-def ParseCommand(body):
+def parse_command(body):
     """Parse a command out of a message body.
 
     Args:
