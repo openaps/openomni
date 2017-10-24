@@ -23,7 +23,7 @@ def main(options=None):
     if args.infile:
         packets = [Packet.from_string(l) for l in args.infile]
     elif args.data:
-        packets = [Packet.from_hex(a) for x in args.data]
+        packets = [Packet.from_hex(x) for x in args.data]
     else:
         print("Need either --infile or hex data args.")
         return
