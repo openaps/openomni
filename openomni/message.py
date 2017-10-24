@@ -1,7 +1,7 @@
 import copy
 import crc16
 from packet import Packet, PacketType
-from commands import ParseCommand
+from commands import parse_command
 
 
 class Message(object):
@@ -28,7 +28,7 @@ class Message(object):
         body = copy.copy(self.body)
         cmds = []
         while body:
-            cmd, body = ParseCommand(body)
+            cmd, body = parse_command(body)
             cmds.append(cmd)
         return cmds
 
