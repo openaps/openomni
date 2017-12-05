@@ -11,7 +11,7 @@ We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki
 
 There are two ways we could use help, beyond trying to crack the two byte crc at the end of messages (though if you want to tackle that, please do!):
   1. Capture data from different pods and commands using omni_listen_rfcat. If you can document what was being done with the PDM while the packets were recorded, that would be a plus, but raw data can be helpful too.  Submit these as new wiki pages and add your new page to the [Packet Captures](https://github.com/openaps/openomni/wiki/Packet-Captures) page.
-  2. Start decoding fields for individual commands. A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
+  2. Start decoding fields for [individual commands](https://github.com/openaps/openomni/wiki/Message-Types). A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
 
 ## What you'll need
 
