@@ -25,9 +25,15 @@ setup(name='openomni',
         'openomni/bin/omni_explore',
         'openomni/bin/omni_send_rfcat',
         'openomni/bin/omni_forloop'],
+      dependency_links=[
+        'https://github.com/atlas0fd00m/rfcat/tarball/master#egg=rfcat-1.0',
+      ],
       packages=find_packages(),
       install_requires=[
           'crccheck',
+          'python-dateutil',
           'enum34;python_version<"3.4"',
+          'pyusb',
+          'rfcat>=1.0'
       ],
       zip_safe=False)

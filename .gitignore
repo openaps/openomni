@@ -4,3 +4,4 @@
 .cache
 .DS_Store
 *.swp
+venv

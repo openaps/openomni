@@ -23,15 +23,9 @@ One of the following.  If you use the TI stick, you will need to flash firmware 
 ## Installation
 
 Prerequisites:
-* python 2.7 (already installed on MacOS)
+* python 2.7 (already installed on MacOS, for windows, download it [here](https://www.python.org/downloads/release/python-2714/))
 * [pip](https://pip.readthedocs.io/en/stable/installing/)
-* [rfcat](https://github.com/atlas0fd00m/rfcat)
-* [enum34](https://pypi.python.org/pypi/enum34) - Install with `pip install enum34`
-* PyUSB - you can install this with pip: `pip install pyusb`, or `sudo pip install pyusb`
 * On mac, you'll need libusb. `brew install libusb` (If you don't have Homebrew installed, go here first: https://brew.sh/)
-* Tip: You may need to install the dateutil package at https://pypi.python.org/pypi/python-dateutil. Extract it to somewhere and run the command:
-
-python setup.py install
 
 You can install openomni in editable mode like this:
 ```
