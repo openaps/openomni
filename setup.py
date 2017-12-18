@@ -32,7 +32,7 @@ setup(name='openomni',
       install_requires=[
           'crccheck',
           'python-dateutil',
-          'enum34;python_version<"3.4"',
+          'enum34',
           'pyusb',
           'rfcat>=1.0'
       ],

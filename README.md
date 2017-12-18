@@ -31,7 +31,7 @@ You can install openomni in editable mode like this:
 ```
 git clone https://github.com/openaps/openomni.git
 cd openomni
-pip install -e .
+pip install -e . --process-dependency-links
 ```
 ** Note: You may need to add 'sudo' before the pip install line if you are using a system python install.
 
