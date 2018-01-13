@@ -61,6 +61,7 @@ Then issue commands from your PDM and they'll appear at the command line.
 * [@DanaMLewis](https://omniaps.slack.com/team/danamlewis)
 * [@Garidan](https://omniaps.slack.com/team/garidan)
 * [@SeattleBrighton](https://omniaps.slack.com/team/seattlebrighton)
+* [@paul](https://omniaps.slack.com/team/paul)
 * [Find out more about the NightScout community here.](https://github.com/nightscout)
 * [Find out more about the OpenAPS open source DIY artificial pancreas project here.](https://openaps.org)
 * Thanks for supporting this effort!!
