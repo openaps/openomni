@@ -30,7 +30,7 @@ Prerequisites:
 You can install openomni in editable mode like this:
 ```
 git clone https://github.com/openaps/openomni.git
-cd openomni
+cd openomni/openomni
 pip install -e . --process-dependency-links
 ```
 ** Note: You may need to add 'sudo' before the pip install line if you are using a system python install.
@@ -62,6 +62,7 @@ Then issue commands from your PDM and they'll appear at the command line.
 * [@Garidan](https://omniaps.slack.com/team/garidan)
 * [@SeattleBrighton](https://omniaps.slack.com/team/seattlebrighton)
 * [@paul](https://omniaps.slack.com/team/paul)
+* [@lytrix](https://omniaps.slack.com/team/lytrix)
 * [Find out more about the NightScout community here.](https://github.com/nightscout)
 * [Find out more about the OpenAPS open source DIY artificial pancreas project here.](https://openaps.org)
 * Thanks for supporting this effort!!
