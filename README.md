@@ -1,7 +1,8 @@
 # OpenOmni
-Documentation and python library for decoding omnipod communications. [Join the Slack channel](https://omniaps.slack.com/) to discuss this work.
+Documentation on the [wiki](https://github.com/openaps/openomni/wiki) bundled with a C and python library for decoding omnipod communications. 
 
-[![Build Status](https://travis-ci.org/openaps/openomni.svg?branch=master)](https://travis-ci.org/openaps/openomni)
+[Join the Slack channel](https://omniaps.slack.com/) to discuss this work.
+
 
 ## Current Status
 
@@ -9,39 +10,22 @@ We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki
 
 ## Areas to focus on
 
-There are two ways we could use help, beyond trying to crack the two byte crc at the end of messages (though if you want to tackle that, please do!):
+There are two ways we could use your help.
   1. Capture data from different pods and commands using omni_listen_rfcat. If you can document what was being done with the PDM while the packets were recorded, that would be a plus, but raw data can be helpful too.  Submit these as new wiki pages and add your new page to the [Packet Captures](https://github.com/openaps/openomni/wiki/Packet-Captures) page.
   2. Start decoding fields for [individual commands](https://github.com/openaps/openomni/wiki/Message-Types). A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
 
 ## What you'll need
 
-One of the following.  If you use the TI stick, you will need to flash firmware onto it using a CC-Debugger.
+There  are 2 ways you can build a radio capture and parsing setup:
 
-  * [RFCat](http://int3.cc/products/rfcat)
-  * [TI USB Stick](http://www.ti.com/tool/cc1111emk868-915)
+1. RFCAT Omni
+This was the first python based capture program, which parsed the data as raw or as txt.
+This needs a compatible RF Cat USB stick and has done a great job in capturing, but was expensive because you will need to flash firmware onto it using a CC-Debugger and we later discovered it was missing some packages.
+[Files and Install guide rfcatomni](https://github.com/openaps/openomni/rfcatomni)
 
-## Installation
-
-Prerequisites:
-* python 2.7 (already installed on MacOS, for windows, download it [here](https://www.python.org/downloads/release/python-2714/))
-* [pip](https://pip.readthedocs.io/en/stable/installing/)
-* On mac, you'll need libusb. `brew install libusb` (If you don't have Homebrew installed, go here first: https://brew.sh/)
-
-You can install openomni in editable mode like this:
-```
-git clone https://github.com/openaps/openomni.git
-cd openomni/openomni
-pip install -e . --process-dependency-links
-```
-** Note: You may need to add 'sudo' before the pip install line if you are using a system python install.
-
-** Note: You can capture packets by plugging an RFCat into a USB port -- then go to the command line, and navigate to this directory:
-/openomni/bin/  and type:
-
-omni_listen_rfcat
-
-Then issue commands from your PDM and they'll appear at the command line.
-
+2. RTL-SDR Omni
+This is later developped to capture the pure wav files and could parse it directly or even could parse the raw txt data of the RFCAT above. This solution uses an inexpensive RTL-SDR USB stick with an antenna (really needed to get a good recording) as cheaper hardware solution, written in C.
+[Files and install guide rtlomni](https://github.com/openaps/openomni/rtlomni)
 
 =======
 ##### ** Please note the details below are related to a project created to better understand how the omnipod communicates **
