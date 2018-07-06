@@ -1,0 +1,7 @@
+packetdiag {
+colwidth=8
+0-41: unknown
+42-53: Time Active
+54-61: Reservoir Level
+62-79: unknown
+}
