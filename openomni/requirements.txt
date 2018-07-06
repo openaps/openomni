@@ -1,5 +1,0 @@
-crccheck
-python-dateutil
-pyusb
-git+https://github.com/atlas0fd00m/rfcat
-enum34>=1.1.6 ; python_version <= '2.7'
