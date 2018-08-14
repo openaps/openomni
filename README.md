@@ -1,12 +1,18 @@
 # OpenOmni
-Documentation on the [wiki](https://github.com/openaps/openomni/wiki) bundled with a C and python library for decoding omnipod communications. 
+
+Documentation and 2 programs for decoding omnipod communications for RTLSDR and RFCAT devices. 
 
 [Join the Slack channel](https://omniaps.slack.com/) to discuss this work.
 
+All the found messages can be found in the documentation on the [wiki](https://github.com/openaps/openomni/wiki)  
 
 ## Current Status
 
-We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki/RF-Modulation) and [packet/message encoding](https://github.com/openaps/openomni/wiki). We are now working on decoding meaning of the bytes in the body for each of the [Message Types](https://github.com/openaps/openomni/wiki/Message-Types).
+We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki/RF-Modulation) and [packet/message encoding](https://github.com/openaps/openomni/wiki). We are now working on decoding the meaning of the bytes in the body for each of the [Message Types](https://github.com/openaps/openomni/wiki/Message-Types).
+
+Device drivers for [Rileylink](https://getrileylink.org/) are currently being developped with use of this documentation:
+1. [Rileylink branch Omnikit](https://github.com/ps2/rileylink_ios/tree/omnikit) for using the pump with [Loop](https://github.com/LoopKit/Loop)
+2. [RileylinkAAPS branch dev_omnikit](https://github.com/ktomy/RileyLinkAAPS) for using the pump with [AndoidAPS](https://github.com/MilosKozak/AndroidAPS)
 
 ## Areas to focus on
 
@@ -19,12 +25,14 @@ There are two ways we could use your help.
 There  are 2 ways you can build a radio capture and parsing setup:
 
 1. RFCAT Omni
+
 This was the first python based capture program, which parsed the data as raw or as txt.
-This needs a compatible RF Cat USB stick and has done a great job in capturing, but was expensive because you will need to flash firmware onto it using a CC-Debugger and we later discovered it was missing some packages.
+This needs a [compatible RF Cat USB stick](https://int3.cc/products/rfcat) and has done a great job in capturing, but was expensive because you will need to flash firmware onto it using a [CC-Debugger](https://store.ti.com/CC-DEBUGGER-Debugger-and-Programmer-for-RF-System-on-Chips-P1627.aspx) and we later discovered it was missing some packages.
 [Files and Install guide rfcatomni](https://github.com/openaps/openomni/rfcatomni)
 
 2. RTL-SDR Omni
-This is later developped to capture the pure wav files and could parse it directly or even could parse the raw txt data of the RFCAT above. This solution uses an inexpensive RTL-SDR USB stick with an antenna (really needed to get a good recording) as cheaper hardware solution, written in C.
+
+This program was later developped to capture the pure wav files in C which can parsed directly. It can also parse the raw txt data of the RFCAT above. This solution uses an [inexpensive RTL-SDR USB stick with an antenna](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles) (really needed to get a good recording) as cheaper hardware solution.
 [Files and install guide rtlomni](https://github.com/openaps/openomni/rtlomni)
 
 =======
@@ -41,6 +49,7 @@ This is later developped to capture the pure wav files and could parse it direct
 * [@t1djoe](https://omniaps.slack.com/team/t1djoe)
 * [@joakimornstedt](https://omniaps.slack.com/team/joakimornstedt)
 * [@pete](https://omniaps.slack.com/team/pete)
+* [@itsmojo](https://omniaps.slack.com/team/itsmojo)
 * [@marius](https://omniaps.slack.com/team/marius) 
 * [@DanaMLewis](https://omniaps.slack.com/team/danamlewis)
 * [@Garidan](https://omniaps.slack.com/team/garidan)
