@@ -30,7 +30,14 @@ make
 sudo apt-get install rtl-sdr
 
 ```
+# Installation for transmitting (Only Raspberry Pi)
+```sh
+git clone https://github.com/F5OEO/rpitx
+cd rpitx
+git checkout dev
+./install.sh
 
+```
 # Launching rtlomni for analysis
 you can launch :
 ```sh
@@ -42,5 +49,9 @@ For live message recording, there is a script
 ```sh
 ./recordiq.sh
 ```
-
+# Launching rtlomni for transmitting (simulating a PDM)
+Modify "txtest.sh" with your PDM parameters, specially address
+```sh
+./txtest.sh
+```
 

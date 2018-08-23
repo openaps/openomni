@@ -243,7 +243,7 @@ void *WriteSDR(void * arg)
 							//printf("Outpipe %d\n",n);
 			
 						 
-            if(TxSymbolsToTx==0)//Nothing to Tx
+            if((TxSymbolsToTx==0))//Nothing to Tx
             {
                 pthread_mutex_unlock(&muttx);
                 while(n<20000)
@@ -284,7 +284,7 @@ void *WriteSDR(void * arg)
                 }
             
                 int NumWritten=write(FileFreqTiming,buffloat_tx,sizeof(float)*2*TxSymbolsToTx*8*8);
-                if(NumWritten<=0) printf("TX:Pipe Writing error %d/%lu\n",NumWritten,sizeof(float)*2*TxSymbolsToTx*8*8);
+                if(NumWritten<=0) printf("TX:Pipe Writing error %d/%d\n",NumWritten,sizeof(float)*2*TxSymbolsToTx*8*8);
                 TxSymbolsToTx=0;
                 TxSymbolsSize=0;
                 pthread_mutex_unlock(&muttx); 
