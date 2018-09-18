@@ -1,0 +1,150 @@
+#!/usr/bin/env python2
+
+"Reads omnipod signals from multiple reciever radios"
+
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+
+from collections import defaultdict
+from rflib import RfCat, ChipconUsbTimeoutException
+import time
+import datetime
+import argparse
+import openomni.rf
+from openomni.packet import Packet
+from multiprocessing import Process, Queue
+import logging
+
+import atexit
+
+
+def sniff_packets(rfcatidx, pktq, rfcatdebug=False):
+    log = logging.getLogger("sniff_packets@{}".format(rfcatidx))
+    log.debug("opening device")
+    # will spin forever without a device
+    device = RfCat(rfcatidx, debug=rfcatdebug)
+    log.debug("configuring device")
+    openomni.rf.configure_rfcat(device)
+    log.info("device configured, capturing packets")
+    while True:
+        try:
+            pkt, ts = device.RFrecv(timeout=80000)
+            pkt = Packet.flip_bytes(pkt)
+            x = 0
+            while x < len(pkt):
+                packet = Packet(pkt[:len(pkt) - (x + 1)])
+                packet.received_at = datetime.datetime.fromtimestamp(ts)
+                if packet.is_valid():
+                    log.debug("found valid packet at offset {}, passing"
+                              .format(x))
+                    item = (rfcatidx, packet)
+                    pktq.put(item)
+                x += 1
+        except ChipconUsbTimeoutException:
+            log.debug("nuisance usb timeout, retrying")
+            time.sleep(0.1)
+        except Exception as e:
+            try:
+                item = (rfcatidx, e)
+                pktq.put(item)
+            except:
+                # well I guess the queue is broke then
+                pass
+
+
+def main(options=None):
+    parser = argparse.ArgumentParser(description="Capture omnipod packets using rfcat.")
+    parser.add_argument("--json", action="store_true",
+                        help="print as json (default: text line)")
+
+    parser.add_argument("--raw", action="store_true",
+                        help="print raw packet")
+    parser.add_argument("--debug", action="store_true",
+                        help="enable debug messages")
+    parser.add_argument("--rfcatdebug", action="store_true",
+                        help="enable spammy rfcat debug messages")
+    parser.add_argument("ndevices", type=int, help="number of radios")
+
+    args = parser.parse_args()
+
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
+    log = logging.getLogger("main")
+    pktq = Queue()
+
+    packetlibrary = defaultdict(list)
+
+    if args.ndevices < 1:
+        raise SystemExit("zero devices wat")
+
+    log.info("starting {} workers".format(args.ndevices))
+    workers = [Process(target=sniff_packets,
+                       name="sniff_packets:{}".format(i),
+                       args=(i, pktq, args.rfcatdebug))
+               for i in range(args.ndevices)]
+
+    for worker in workers:
+        worker.start()
+
+    def worker_check():
+        return all([worker.is_alive() for worker in workers])
+
+    def worker_stop():
+        for worker in workers:
+            if worker.is_alive():
+                worker.terminate()
+
+    def packet_check(uniq):
+        packets = packetlibrary[uniq]
+        uniques = set(packets)
+        return len(uniques) == 1
+
+    atexit.register(worker_stop)
+
+    if not worker_check():
+        raise SystemExit("workers unable to start")
+
+    try:
+        while True:
+            if not worker_check():
+                print("workers have terminated!")
+                # hehehe
+                raise KeyboardInterrupt
+            log.debug("blocking on input queue")
+            item = pktq.get()
+            idx, obj = item
+            log.debug("{} sent {} item".format(idx, type(obj).__name__))
+            if type(obj) is Packet:
+                packet = obj
+                if args.raw:
+                    print("{} -> [{}]".format(idx, packet.data.encode("hex")))
+                elif args.json:
+                    # don't print the index because precious json
+                    print(packet.as_json())
+                else:
+                    print("{} -> [{}]".format(idx, packet))
+
+                uniq = (packet.pod_address_1, packet.sequence)
+                packetlibrary[uniq].append(packet)
+                if len(packetlibrary[uniq]) > 1:
+                    if packet_check(uniq):
+                        print("{} -> last packet validated!".format(idx))
+            elif isinstance(obj, Exception):
+                log.fatal("{} threw {}".format(idx, obj))
+                worker_stop()
+                break
+            else:
+                # wat
+                import code
+                code.interact(local=dict(globals(), **locals()))
+    except KeyboardInterrupt:
+        print("Terminating...")
+        worker_stop()
+
+if __name__ == "__main__":
+    main()

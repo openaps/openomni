@@ -1,0 +1,11 @@
+packetdiag {
+colwidth=32
+0-31: pod_address_1
+32-34: packet_type
+35-39: sequence
+40-71: pod_address_2
+72-79: byte9
+80-87: blen (total body length)
+88-287: body segment data
+288-295: crc
+}
