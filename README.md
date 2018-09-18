@@ -28,12 +28,12 @@ There  are 2 ways you can build a radio capture and parsing setup:
 
 This was the first python based capture program, which parsed the data as raw or as txt.
 This needs a [compatible RF Cat USB stick](https://int3.cc/products/rfcat) and has done a great job in capturing, but was expensive because you will need to flash firmware onto it using a [CC-Debugger](https://store.ti.com/CC-DEBUGGER-Debugger-and-Programmer-for-RF-System-on-Chips-P1627.aspx) and we later discovered it was missing some packages.
-[Files and Install guide rfcatomni](https://github.com/openaps/openomni/rfcatomni)
+[Files and Install guide rfcatomni](https://github.com/openaps/openomni/tree/master/rfcatomni)
 
 2. RTL-SDR Omni
 
 This program was later developped to capture the pure wav files in C which can parsed directly. It can also parse the raw txt data of the RFCAT above. This solution uses an [inexpensive RTL-SDR USB stick with an antenna](https://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles) (really needed to get a good recording) as cheaper hardware solution.
-[Files and install guide rtlomni](https://github.com/openaps/openomni/rtlomni)
+[Files and install guide rtlomni](https://github.com/openaps/openomni/tree/master/rtlomni)
 
 =======
 ##### ** Please note the details below are related to a project created to better understand how the omnipod communicates **
