@@ -11,7 +11,7 @@ All the found messages can be found in the documentation on the [wiki](https://g
 We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki/RF-Modulation) and [packet/message encoding](https://github.com/openaps/openomni/wiki). We are now working on decoding the meaning of the bytes in the body for each of the [Message Types](https://github.com/openaps/openomni/wiki/Message-Types).
 
 Device drivers for [Rileylink](https://getrileylink.org/) are currently being developped with use of this documentation:
-1. [Rileylink branch Omnikit](https://github.com/ps2/rileylink_ios/tree/omnikit) for using the pump with [Loop](https://github.com/LoopKit/Loop)
+1. [Rileylink branch Omnikit](https://github.com/ps2/rileylink_ios/tree/dev) for using the pump with [Loop](https://github.com/LoopKit/Loop)
 2. [RileylinkAAPS branch dev_omnikit](https://github.com/ktomy/RileyLinkAAPS) for using the pump with [AndoidAPS](https://github.com/MilosKozak/AndroidAPS)
 
 ## Areas to focus on
@@ -50,6 +50,7 @@ This program was later developped to capture the pure wav files in C which can p
 * [@joakimornstedt](https://omniaps.slack.com/team/joakimornstedt)
 * [@pete](https://omniaps.slack.com/team/pete)
 * [@itsmojo](https://omniaps.slack.com/team/itsmojo)
+* [@evariste](https://omniaps.slack.com/team/U704ZMWQY)
 * [@marius](https://omniaps.slack.com/team/marius) 
 * [@DanaMLewis](https://omniaps.slack.com/team/danamlewis)
 * [@Garidan](https://omniaps.slack.com/team/garidan)
