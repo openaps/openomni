@@ -22,8 +22,8 @@ make
 sudo make install
 sudo ldconfig
 
-git clone https://github.com/F5OEO/rtlomni
-cd rtlomni
+git clone https://github.com/openaps/openomni.git
+cd openomni/rtlomni
 make
 
 #Install rtl-sdr driver and utilities (rtl_test, rtl_sdr ...)
