@@ -12,15 +12,20 @@ SDR demodulation and signal processing is based on excellent https://github.com/
 
 # Installation under Debian based system (via @Katie DiS)
 
+Install homebrew (google those instructions if you don’t already have it installed)
 ```sh
-1. Install homebrew (google those instructions if you don’t already have it installed)
-2. `brew install rtl-sdr`
-3. `brew install liquid-dsp`
-4. download and unzip this https://www.dropbox.com/s/38jdw8p39v4je1p/rtlomni.tar.gz?dl=0
-5. use terminal app to change into that directory…command will depend on where it is stored.  for me, `cd rtlomni` since it’s in my user root
-6. `./recordiq.sh`
-7. and control-c to stop recording
+brew install rtl-sdr
+brew install liquid-dsp
 ```
+Download and unzip this https://www.dropbox.com/s/38jdw8p39v4je1p/rtlomni.tar.gz?dl=0
+Use terminal app to change into that directory…command will depend on where it is stored. Example: `cd rtlomni` if it’s in the user root
+
+```sh
+./recordiq.sh
+```
+
+Control-c to stop recording
+
 # Installation under Debian based system
 ```sh
 sudo apt-get install autoconf git
