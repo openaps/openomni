@@ -10,14 +10,16 @@ Hope this could help https://github.com/openaps/openomni
 
 SDR demodulation and signal processing is based on excellent https://github.com/jgaeddert/liquid-dsp/
 
-# Installation under Debian based system (via @Katie DiS)
+# Installation for Mac/Terminal (h/t @Katie DiS)
 
 Install homebrew (google those instructions if you don’t already have it installed)
+
 ```sh
 brew install rtl-sdr
 brew install liquid-dsp
 ```
 Download and unzip this https://www.dropbox.com/s/38jdw8p39v4je1p/rtlomni.tar.gz?dl=0
+
 Use terminal app to change into that directory…command will depend on where it is stored. Example: `cd rtlomni` if it’s in the user root
 
 ```sh
