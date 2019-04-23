@@ -1,26 +1,23 @@
 # OpenOmni
 
-Documentation and 2 programs for decoding omnipod communications for RTLSDR and RFCAT devices. 
+This repository contains all the discovered protocols, commands, error types and other messages used to communicate with an Omnipod pump described in the [wiki](https://github.com/openaps/openomni/wiki) together with many [Packet Captures](https://github.com/openaps/openomni/wiki/Packet-Captures) which have been used to find the logic behind each command.
+
+Also provided are the 2 programs used for decoding the Omnipod communications for RTLSDR and RFCAT devices. 
 
 [Join the Slack channel](https://omniaps.slack.com/) to discuss this work.
 
-All the found messages can be found in the documentation on the [wiki](https://github.com/openaps/openomni/wiki)  
 
 ## Current Status
 
-We have figured out the [RF modulation](https://github.com/openaps/openomni/wiki/RF-Modulation) and [packet/message encoding](https://github.com/openaps/openomni/wiki). We are now working on decoding the meaning of the bytes in the body for each of the [Message Types](https://github.com/openaps/openomni/wiki/Message-Types).
+- In 2016 we figured out the [RF modulation](https://github.com/openaps/openomni/wiki/RF-Modulation) and [packet/message encoding](https://github.com/openaps/openomni/wiki). (1 year)
+- In 2017 we got the firmware from the Pod chip, reverse engineering,  decoding the meaning of the bytes in the body for each of the [Message Types](https://github.com/openaps/openomni/wiki/Message-Types). (2 years)
+- In 2018 implementation of the commands and logic started first within the [Rileylink_ios Omnikit](https://github.com/ps2/rileylink_ios/tree/omnipod-testing) framework for using the pump with [Loop](https://github.com/LoopKit/Loop/tree/omnipod-testing) and [Rileylink](https://getrileylink.org/) hardware. (1 year) 
+- In 2018 the [porting of Rileylink_ios to RileyLinkAAPS](https://github.com/andyrozman/RileyLinkAAPS/tree/dev_medtronic) was started for the Medtronic Pump to be able to use it with [AndroidAPS](https://github.com/MilosKozak/AndroidAPS) (1 year in the works, see current progress [here](https://github.com/andyrozman/RileyLinkAAPS/projects/1))
+- A [port of Rileylink_ios Omnipod](https://github.com/andyrozman/RileyLinkAAPS/tree/dev_omnipod) to RileyLinkAAPS was started but needs people with Java/Android experience.
+- On 23th April 2019 the first test/dev version of [DIY Loop for Omnipod](https://github.com/loopKit/loop/tree/omnipod-testing) was publicly released.
+- In 2019 the new bluetooth powered Omnipod Dash will be implemented in [Tidepool Loop](https://github.com/tidepool-org/Loop)
 
-Device drivers for [Rileylink](https://getrileylink.org/) are currently being developped with use of this documentation:
-1. [Rileylink branch Omnikit](https://github.com/ps2/rileylink_ios/tree/dev) for using the pump with [Loop](https://github.com/LoopKit/Loop)
-2. [RileylinkAAPS branch dev_omnikit](https://github.com/ktomy/RileyLinkAAPS) for using the pump with [AndoidAPS](https://github.com/MilosKozak/AndroidAPS)
-
-## Areas to focus on
-
-There are two ways we could use your help.
-  1. Capture data from different pods and commands using omni_listen_rfcat. If you can document what was being done with the PDM while the packets were recorded, that would be a plus, but raw data can be helpful too.  Submit these as new wiki pages and add your new page to the [Packet Captures](https://github.com/openaps/openomni/wiki/Packet-Captures) page.
-  2. Start decoding fields for [individual commands](https://github.com/openaps/openomni/wiki/Message-Types). A good way to start doing this is to repeatedly perform a certain type of action on the PDM tweaking *1* thing each time, and inspecting the generated packets to see which bytes differ.
-
-## What you'll need
+## What you'll need to capture the commands
 
 There  are 2 ways you can build a radio capture and parsing setup:
 
