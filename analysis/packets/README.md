@@ -1,5 +1,5 @@
 # Packet Structure
-![Alert](https://rawgit.com/openaps/omnidocs/master/packets/packet.svg)
+![https://raw.githubusercontent.com/openaps/openomni/master/analysis/packets/packet.svg](https://raw.githubusercontent.com/openaps/openomni/master/analysis/packets/packet.svg?sanitize=true)
 
 At the hardware level, the pod_address_1, packet type, sequence, and crc are stripped, and the remaining data is presented to the firmware.
 
