@@ -13,8 +13,9 @@ Also provided are the 2 programs used for decoding the Omnipod communications fo
 - In 2017 we got the firmware from the Pod chip, reverse engineering,  decoding the meaning of the bytes in the body for each of the [Message Types](https://github.com/openaps/openomni/wiki/Message-Types). (2 years)
 - In 2018 implementation of the commands and logic started first within the [Rileylink_ios Omnikit](https://github.com/ps2/rileylink_ios/tree/omnipod-testing) framework for using the pump with [Loop](https://github.com/LoopKit/Loop/tree/omnipod-testing) and [Rileylink](https://getrileylink.org/) hardware. (1 year) 
 - In 2018 the [porting of Rileylink_ios to RileyLinkAAPS](https://github.com/andyrozman/RileyLinkAAPS/tree/dev_medtronic) was started for the Medtronic Pump to be able to use it with [AndroidAPS](https://github.com/MilosKozak/AndroidAPS) (1 year in the works, see current progress [here](https://github.com/andyrozman/RileyLinkAAPS/projects/1))
+- In February 2019 [Omnipy](https://github.com/winemug/omnipy) was released to the public, an implementation that allows looping with the omnipod by using the omnipy program to communicate with AndroidAPS
 - A [port of Rileylink_ios Omnipod](https://github.com/andyrozman/RileyLinkAAPS/tree/dev_omnipod) to RileyLinkAAPS was started but needs people with Java/Android experience.
-- On 23th April 2019 the first test/dev version of [DIY Loop for Omnipod](https://github.com/loopKit/loop/tree/omnipod-testing) was publicly released.
+- On 23rd April 2019 the first test/dev version of [DIY Loop for Omnipod](https://github.com/loopKit/loop/tree/omnipod-testing) was publicly released.
 - In 2019 the new bluetooth powered Omnipod Dash will be implemented in [Tidepool Loop](https://github.com/tidepool-org/Loop)
 
 ## What you'll need to capture the commands
